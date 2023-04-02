@@ -13,6 +13,7 @@ function App() {
         { id: 3, title: "React", isDone: false, }
     ]
 
+    
     const tasks_2: Array<TaskType> = [
         { id: 4, title: "BREAD", isDone: true },
         { id: 5, title: "WATER", isDone: false },
