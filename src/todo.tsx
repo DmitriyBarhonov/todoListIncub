@@ -1,12 +1,14 @@
 import { JsxElement } from 'typescript';
 import './App.css';
 import { FC } from 'react';
+import { FliterValuesType } from './App';
 
 
 type TodoListPropsType ={
     title: string
     tasks: TaskType[]
     removeTask: (taskId: number)=> void
+    changeFilter: (filterValue: FliterValuesType)=> void
 }
 
 export type TaskType = {
@@ -45,9 +47,9 @@ const TodoList: FC<TodoListPropsType>= (props) => {
                 {tasksJSXElement}
             </ul>
             <div>
-                <button>All</button>
-                <button>Active</button>
-                <button>Completed</button>
+                <button onClick={()=>props.changeFilter("all")}>All</button>
+                <button onClick={()=>props.changeFilter("active")}>Active</button>
+                <button onClick={()=>props.changeFilter("completed")}>Completed</button>
             </div>
         </div>
     )
