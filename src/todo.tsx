@@ -45,8 +45,10 @@ const TodoList: FC<TodoListPropsType> = (props) => {
                 <button>+</button>
             </div>
             <ul>
+
                 {tasksJSXElement}
             </ul>
+            
             <div>
                 <div><button onClick={props.deleteAllTasks}>Delete All</button></div>
                 <button onClick={() => props.changeFilter("all")}>All</button>
