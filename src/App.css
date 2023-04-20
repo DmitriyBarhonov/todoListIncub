@@ -13,3 +13,19 @@
   border-radius: 5px;
   padding: 15px;
 }
+
+.task{
+  font-weight: bold;
+}
+
+.task_not_is_done{
+  font-weight: normal;
+  text-decoration: line-through;
+}
+
+.filter_btn_active{
+  background-color: coral;
+  color: white;
+  border-color: coral;
+
+}

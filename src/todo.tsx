@@ -4,7 +4,7 @@ import { FC, useState } from 'react';
 import { FliterValuesType } from './App';
 import { v1 } from 'uuid';
 import { ChangeEvent, KeyboardEvent } from 'react';
-import { log } from 'console';
+
 
 type TodoListPropsType = {
     title: string
@@ -13,6 +13,8 @@ type TodoListPropsType = {
     changeFilter: (filterValue: FliterValuesType) => void
     deleteAllTasks: () => void
     addTask: (title: string) => void
+    changeTaskStatus: (id: string, newIsDoneValue: boolean) => void
+    filter: any
 }
 
 export type TaskType = {
@@ -28,6 +30,7 @@ export type TaskType = {
 const TodoList: FC<TodoListPropsType> = (props) => {
 
     const [title, setTitle] = useState('')
+    const [error, setError] = useState<boolean>(false)
 
     const setTitleHeadler = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value)
@@ -35,21 +38,29 @@ const TodoList: FC<TodoListPropsType> = (props) => {
     }
 
     const tasckHeandler = () => {
-        props.addTask(title)
+        const trimedTitle = title.trim()
+        if(trimedTitle) props.addTask(title)
         setTitle('')
     }
     const titleMaxLength = 25
     const istitleLengthTooLong: boolean = title.length > titleMaxLength
     const isAddBtnDisabled: boolean = title.length === 0 || title.length > titleMaxLength
-    const handlerCreactor = (filter: FliterValuesType)=> () => props.changeFilter(filter)
-    const AddTaskOnKey = (e: KeyboardEvent<HTMLInputElement>)=> e.key === "Enter" && !isAddBtnDisabled && tasckHeandler()
+    const handlerCreactor = (filter: FliterValuesType) => () => props.changeFilter(filter)
+    const AddTaskOnKey = (e: KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && !isAddBtnDisabled && tasckHeandler()
+   
 
-    const tasksJSXElement: any = props.tasks.map((t: TaskType, index): JSX.Element => {
+
+    const tasksJSXElement: Array<JSX.Element> = props.tasks.map((t: TaskType, index): JSX.Element => {
+        const removeTask = () => props.removeTask(t.id)
+        const taskClasses = t.isDone ? "task_not_is_done" : "task"
+        const changeTasks = (e: ChangeEvent<HTMLInputElement>) => {
+            props.changeTaskStatus(t.id, e.currentTarget.checked)
+        }
         return (
-            <li key={index}>
-                <input type="checkbox" checked={t.isDone} />
+            <li className={taskClasses} key={index}>
+                <input onChange={changeTasks} type="checkbox" checked={t.isDone} />
                 <span>{t.title}</span>
-                <button onClick={() => props.removeTask(t.id)}>X</button>
+                <button onClick={removeTask}>X</button>
             </li>
         )
     })
@@ -64,7 +75,7 @@ const TodoList: FC<TodoListPropsType> = (props) => {
                 <h3>{props.title}</h3>
                 <div>
                     <input onKeyDown={AddTaskOnKey} placeholder='Max 25 simbols' value={title} onChange={setTitleHeadler} />
-                    <button  disabled={isAddBtnDisabled} onClick={tasckHeandler}>+</button>
+                    <button disabled={isAddBtnDisabled} onClick={tasckHeandler}>+</button>
                     {istitleLengthTooLong && <div>Title is too long</div>}
                 </div>
                 <ul>
@@ -74,10 +85,10 @@ const TodoList: FC<TodoListPropsType> = (props) => {
 
                 <div>
                     <div><button onClick={props.deleteAllTasks}>Delete All</button></div>
-                    <button onClick={handlerCreactor("all")}>All</button>
-                    <button onClick={handlerCreactor("active")}>Active</button>
-                    <button onClick={handlerCreactor("completed")}>Completed</button>
-                    <button onClick={handlerCreactor("firstThre")}>First thre tasks</button>
+                    <button className={props.filter === "all" ? "filter_btn_active" : ""} onClick={handlerCreactor("all")}>All</button>
+                    <button className={props.filter === "active" ? "filter_btn_active" : ""} onClick={handlerCreactor("active")}>Active</button>
+                    <button className={props.filter === "completed" ? "filter_btn_active" : ""} onClick={handlerCreactor("completed")}>Completed</button>
+                    <button className={props.filter === "firstThre" ? "filter_btn_active" : ""} onClick={handlerCreactor("firstThre")}>First thre tasks</button>
                 </div>
             </div>
         </>

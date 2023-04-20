@@ -33,8 +33,8 @@ function App() {
 
     const addTask = (title: string) => {
         const newTask: TaskType = {
-            id: v1(), 
-            title: title, 
+            id: v1(),
+            title: title,
             isDone: false,
         }
         setTasks([newTask, ...tasks_1])
@@ -44,17 +44,19 @@ function App() {
     const taksWhatIWantToSee = (tasksList: Array<TaskType>, filterValue: FliterValuesType) => {
         switch (filterValue) {
             case "active":
-                return tasks_1.filter(t => t.isDone === false)
+                return tasksList.filter(t => t.isDone === false)
             case "completed":
-                return tasks_1.filter(t => t.isDone === true)
+                return tasksList.filter(t => t.isDone === true)
             case "firstThre":
-                return tasks_1.slice(0, 3)
+                return tasksList.slice(0, 3)
             default:
-                return tasks_1
+                return tasksList
         }
+    }           
+
+    const changeTaskStatus = (taskId: string, newIsDoneValue: boolean) => {
+        setTasks(tasks_1.map(t => t.id === taskId ? { ...t, isDone: newIsDoneValue } : t))
     }
-
-
 
     const newTasksFilter = taksWhatIWantToSee(tasks_1, filter)
 
@@ -64,7 +66,14 @@ function App() {
     return (
         <div className="App">
 
-            <TodoList addTask={addTask} deleteAllTasks={deleteAllTasks} changeFilter={changeFilter} removeTask={removeTask} tasks={newTasksFilter} title={title1} />
+            <TodoList filter={filter}
+                changeTaskStatus={changeTaskStatus}
+                addTask={addTask}
+                deleteAllTasks={deleteAllTasks}
+                changeFilter={changeFilter}
+                removeTask={removeTask}
+                tasks={newTasksFilter}
+                title={title1} />
         </div>
     );
 }
