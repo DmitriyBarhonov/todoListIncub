@@ -3,7 +3,7 @@ import { FliterValuesType, TodolistsType } from "../../App"
 
 
 
-export const todoListReducer =(state: TodolistsType[], action: AllAction):any =>{
+export const todoListReducer =(state: TodolistsType[], action: AllAction):TodolistsType[] =>{
 
     switch (action.type) {
         case 'CHANGE-FILTER':
@@ -13,7 +13,6 @@ export const todoListReducer =(state: TodolistsType[], action: AllAction):any =>
              case 'ADD-TODO':
                 return [...state, action.payload.newTodoListItem]
              case "UPDATE-TITLE":
-                // todolists.map(el => el.id === todoListID ? { ...el, title } : el)
                 return state.map(el => el.id === action.payload.todoListID ? { ...el, title: action.payload.title } : el)
 
         default:
