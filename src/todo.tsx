@@ -1,10 +1,10 @@
 import './App.css';
 import { FC } from 'react';
 import { FliterValuesType } from './App';
-import { ChangeEvent } from 'react';
 import { AddItemForm } from './compomets/input/addItemForm';
 import { EditableSpan } from './compomets/editableSpan/editableSpan';
- 
+import { SuperCheckBox } from './compomets/Supercheck/SuperChek';
+import Button from '@mui/material/Button';
 
 type TodoListPropsType = {
     title: string
@@ -18,6 +18,7 @@ type TodoListPropsType = {
     todoListID: string
     updateTask: (todoListID: string, taskId: string, title: string) => void
     updateTodoListTitle: (todoListID: string, title: string) => void
+    deleteTodoList: (todoListID: string)=>void
 }
 
 export type TaskType = {
@@ -41,17 +42,17 @@ const TodoList: FC<TodoListPropsType> = (props) => {
     const updateTaskHandler = (taskId: string, title: string) => {
         props.updateTask(props.todoListID, taskId, title)
     }
+    const deleteTodoListHandler = () => {
+        props.deleteTodoList(props.todoListID)
+    }
 
     const tasksJSXElement: Array<JSX.Element> = props.tasks?.map((t: TaskType, index): JSX.Element => {
         const removeTask = () => props.removeTask(props.todoListID, t.id)
         const taskClasses = t.isDone ? "task_not_is_done" : "task"
-        const changeTasks = (e: ChangeEvent<HTMLInputElement>) => {
-            props.changeTaskStatus(props.todoListID, t.id, e.currentTarget.checked)
-        }
 
         return (
             <li className={taskClasses} key={index}>
-                <input onChange={changeTasks} type="checkbox" checked={t.isDone} />
+                <SuperCheckBox callBack={(e)=>props.changeTaskStatus(props.todoListID, t.id, e)} checked={t.isDone}/>
                 <EditableSpan callBack={(title) => updateTaskHandler(t.id, title,)} oldTitle={t.title} />
                 <button onClick={removeTask}>X</button>
             </li>
@@ -70,7 +71,6 @@ const TodoList: FC<TodoListPropsType> = (props) => {
     }
 
 
-
     return (
         <>
 
@@ -78,11 +78,12 @@ const TodoList: FC<TodoListPropsType> = (props) => {
                 <h3>
                     <EditableSpan oldTitle={props.title} callBack={updateTodoListTitleHandler} />
                 </h3>
+                <Button  variant="contained" onClick={deleteTodoListHandler}>Delete Todo List</Button>
                 <div>
                     <AddItemForm callBack={addTaskHandler} />
                 </div>
+              
                 <ul>
-
                     {tasksJSXElement}
                 </ul>
 
