@@ -1,3 +1,4 @@
+import React from "react"
 import { ChangeEvent, useEffect, useState } from "react"
 
 type PropsType = {
@@ -6,11 +7,8 @@ type PropsType = {
 }
 
 
-export const EditableSpan = (props: PropsType) => {
+export const EditableSpan = React.memo( (props: PropsType) => {
 
-useEffect(()=>{
-    setvalue(props.oldTitle)
-},[props.oldTitle])
     const [edit, setEdit] = useState(false)
     const [value, setvalue] = useState(props.oldTitle)
 
@@ -25,6 +23,12 @@ useEffect(()=>{
         if (edit) updateTitle()
     }
 
+    useEffect(() => {
+        setvalue(props.oldTitle)
+    }, [props.oldTitle])
+
+    
+console.log('EditableSpan');
 
 
     return (
@@ -33,4 +37,4 @@ useEffect(()=>{
             : <span onDoubleClick={editHandler}>{props.oldTitle}</span>
 
     )
-}
+})

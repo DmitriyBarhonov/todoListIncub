@@ -1,13 +1,21 @@
-import { FliterValuesType, TodolistsType } from "../../App"
+
 import { v1 } from 'uuid';
+export type FliterValuesType = 'all' | 'active' | 'completed' | 'firstThre'
+export type TodolistsType = { id: string, title: string, filter: FliterValuesType }
+
+export let todolistID1 = v1()
+export let todolistID2 = v1()
+
+const initialState: TodolistsType[]  = [
+    { id: todolistID1, title: 'What to learn', filter: 'all' },
+    { id: todolistID2, title: 'What to buy', filter: 'all' },
+]
 
 
-
-export const todoListReducer = (state: TodolistsType[], action: AllAction): TodolistsType[] => {
+export const todoListReducer = (state: TodolistsType[] = initialState , action: AllAction): TodolistsType[] => {
 
     switch (action.type) {
         case 'CHANGE-FILTER':
-            console.log(state);
             return state.map(el => el.id === action.payload.todoListID ? { ...el, filter: action.payload.newFilterValue } : el)
 
         case 'ADD-TODO':
