@@ -60,6 +60,7 @@ const TodoList: FC<TodoListPropsType> = React.memo( (props) => {
         const newTasktId = v1()
         dispatch(addTaskTaskAC(props.todoListID, title, newTasktId))
     },[dispatch, props.todoListID])
+
     const updateTodoListTitleHandler = useCallback( (title: string) => {
         dispatch(updateTodoListTitleAC(props.todoListID, title))
     },[dispatch, props.todoListID])
@@ -90,10 +91,7 @@ const TodoList: FC<TodoListPropsType> = React.memo( (props) => {
                 <ul>
                     {/* {tasksJSXElement} */}  
                     {tasks?.map((t)=>{
-                        return <Task 
-                        todoListID={props.todoListID}
-                        key={t.id} 
-                        id={t.id}
+                        return <Task todoListID={props.todoListID} key={t.id} id={t.id}
                         isDone={t.isDone}
                         title={t.title}
                         updateTaskHandler={updateTaskHandler}

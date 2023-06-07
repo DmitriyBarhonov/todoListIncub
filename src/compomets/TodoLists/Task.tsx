@@ -26,6 +26,7 @@ export const Task = React.memo( (props: PropsTaskType) => {
     const removeTask = useCallback(() => {
         dispatch(removeTaskAC(props.todoListID, props.id));
     }, [dispatch, props.todoListID, props.id]);
+    
     const changeTaskStatus = useCallback((e:boolean) => {
         dispatch(changeTaskStatusTaskAC(props.todoListID, props.id, e))
     }, [dispatch, props.todoListID, props.id]);

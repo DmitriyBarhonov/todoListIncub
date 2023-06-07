@@ -21,7 +21,6 @@ export const AddItemForm = React.memo((props: PropsType) => {
         if (trimedTitle && !isAddBtnDisabled){
             props.callBack(title) 
             setTitle('')
-             
         }
     }
 
