@@ -3,12 +3,12 @@ import Button from '@mui/material/Button';
 import React from "react";
 
 
-type PropsType = {
+export type AddItemFromPropsType = {
     callBack: (title: string) => void
 }
 
 
-export const AddItemForm = React.memo((props: PropsType) => {
+export const AddItemForm = React.memo((props: AddItemFromPropsType) => {
     const [title, setTitle] = useState('')
     const titleMaxLength = 25
     const istitleLengthTooLong: boolean = title.length > titleMaxLength

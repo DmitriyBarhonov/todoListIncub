@@ -94,7 +94,7 @@ const TodoList: FC<TodoListPropsType> = React.memo( (props) => {
                         return <Task todoListID={props.todoListID} key={t.id} id={t.id}
                         isDone={t.isDone}
                         title={t.title}
-                        updateTaskHandler={updateTaskHandler}
+                        updateTaskTitle={updateTaskHandler}
                          />
                     })}
                 </ul>

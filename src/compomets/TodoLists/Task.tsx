@@ -11,7 +11,7 @@ type PropsTaskType = {
     id: string
     isDone: boolean
     title: string
-    updateTaskHandler:(taskId: string, title: string)=> void
+    updateTaskTitle:(taskId: string, title: string)=> void
 }
 
 
@@ -20,8 +20,8 @@ export const Task = React.memo( (props: PropsTaskType) => {
     const dispatch = useDispatch()
 
     const updateTitleTask = useCallback((title: string) => {
-        props.updateTaskHandler(props.id, title);
-    }, [props.updateTaskHandler, props.id]);
+        props.updateTaskTitle(props.id, title);
+    }, [props.updateTaskTitle, props.id]);
 
     const removeTask = useCallback(() => {
         dispatch(removeTaskAC(props.todoListID, props.id));
