@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { addTaskTaskAC, deleteAllTasksTaskAC, updateTaskTitleAC } from '../../store/reducers/tasksReducer';
 import { v1 } from 'uuid';
 import { Task } from './Task';
+import { todoListsAPI } from '../../api/todolist-api';
 
 type TodoListPropsType = {
     title: string
@@ -23,8 +24,7 @@ export type TaskType = {
 
 }
 
-const TodoList: FC<TodoListPropsType> = React.memo( (props) => {
-    console.log("TodoList   " + props.todoListID);
+const TodoList: FC<TodoListPropsType> = React.memo((props) => {
     let tasks = useAppSelector((state) => state.tasks[props.todoListID])
     const dispatch = useDispatch()
 
@@ -42,43 +42,81 @@ const TodoList: FC<TodoListPropsType> = React.memo( (props) => {
     const changeFilter = useCallback((todoListID: string, filter: FliterValuesType) => () => {
         dispatch(changeFilterAC(todoListID, filter));
     }, [dispatch]);
-    
+
     const updateTaskHandler = useCallback((taskId: string, title: string) => {
         dispatch(updateTaskTitleAC(props.todoListID, taskId, title));
     }, [dispatch, props.todoListID]);
-     
+
     const deleteTodoListHandler = useCallback(() => {
         dispatch(deleteTodoListAC(props.todoListID));
         dispatch(deleteAllTasksTaskAC(props.todoListID));
     }, [dispatch, props.todoListID]);
-    
+
     const hendlerDeleteAllTasks = useCallback(() => {
         dispatch(deleteAllTasksTaskAC(props.todoListID));
     }, [dispatch, props.todoListID]);
 
-    const addTaskHandler = useCallback( (title: string) => {
+    const addTaskHandler = useCallback((title: string) => {
         const newTasktId = v1()
         dispatch(addTaskTaskAC(props.todoListID, title, newTasktId))
-    },[dispatch, props.todoListID])
+    }, [dispatch, props.todoListID])
 
-    const updateTodoListTitleHandler = useCallback( (title: string) => {
+    const updateTodoListTitleHandler = useCallback((title: string) => {
         dispatch(updateTodoListTitleAC(props.todoListID, title))
-    },[dispatch, props.todoListID])
- 
-    // const tasksJSXElement: Array<JSX.Element> = tasks?.map((t: TaskType, index): JSX.Element => {
-        // const removeTask = () =>  dispatch(removeTaskAC(props.todoListID, t.id))
-    //     const taskClasses = t.isDone ? "task_not_is_done" : "task"
-    //     return (
-    //         <li className={taskClasses} key={index}>
-    //             <SuperCheckBox callBack={(e) => dispatch(changeTaskStatusTaskAC(props.todoListID, t.id, e))} checked={t.isDone} />
-    //             <EditableSpan callBack={(title) => updateTaskHandler(t.id, title)} oldTitle={t.title} />
-    //             <button onClick={removeTask}>X</button>
-    //         </li> 
-    //     )
-    // })
+    }, [dispatch, props.todoListID])
+
+    //     .then((data) => {
+    //         console.log(data);
+    //     })
+    //     .then((data) => {
+    //         return todoListsAPI.getTodolists()
+    //     })
+    //     .then((data) => {
+    //         console.log(data);
+    //     })
+    // }
+    const a = () => {
+        todoListsAPI.getTodolists()
+            .then((data) => {
+                console.log(data);
+            })
+    }
+    const b = () => {
+        todoListsAPI.creacteTodolists()
+            .then((data) => {
+                console.log(data);
+            })
+    }
+
+    const c = () => {
+        todoListsAPI.getTodolists()
+            .then((data) => {
+                console.log(data);
+            })
+    }
+
+
+    const i = () => {
+        todoListsAPI.updateTitleTodolists("0fa39d11-bfbf-4823-a213-b6057c608d93")
+            .then((data) => {
+                console.log(data);
+            })
+    }
+
+    const d = () => {
+        todoListsAPI.deleteTodolists("0fa39d11-bfbf-4823-a213-b6057c608d93")
+            .then((data) => {
+                console.log(data);
+            })
+    }
+
     return (
         <>
-
+            <button onClick={a}>get</button>
+            <button onClick={b}>creacte</button>
+            <button onClick={d}>delete</button>
+            <button onClick={i}>update</button>
+            <button onClick={a}>get</button>
             <div className="todo">
                 <h3>
                     <EditableSpan oldTitle={props.title} callBack={updateTodoListTitleHandler} />
@@ -89,13 +127,13 @@ const TodoList: FC<TodoListPropsType> = React.memo( (props) => {
                 </div>
 
                 <ul>
-                    {/* {tasksJSXElement} */}  
-                    {tasks?.map((t)=>{
+                    {/* {tasksJSXElement} */}
+                    {tasks?.map((t) => {
                         return <Task todoListID={props.todoListID} key={t.id} id={t.id}
-                        isDone={t.isDone}
-                        title={t.title}
-                        updateTaskTitle={updateTaskHandler}
-                         />
+                            isDone={t.isDone}
+                            title={t.title}
+                            updateTaskTitle={updateTaskHandler}
+                        />
                     })}
                 </ul>
 

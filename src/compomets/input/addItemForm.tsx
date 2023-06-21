@@ -26,8 +26,7 @@ export const AddItemForm = React.memo((props: AddItemFromPropsType) => {
 
     const AddTaskOnKey = (e: KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && !isAddBtnDisabled && tasckHeandler()
     const setTitleHeadler = (e: ChangeEvent<HTMLInputElement>) => setTitle(e.currentTarget.value)
-    console.log("AddItemForm");
-    
+
     return (
         <>
             <input

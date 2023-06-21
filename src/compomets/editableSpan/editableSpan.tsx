@@ -28,7 +28,7 @@ export const EditableSpan = React.memo( (props: PropsType) => {
     }, [props.oldTitle])
 
     
-console.log('EditableSpan');
+
 
 
     return (
