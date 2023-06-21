@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { addTaskTaskAC, deleteAllTasksTaskAC, updateTaskTitleAC } from '../../store/reducers/tasksReducer';
 import { v1 } from 'uuid';
 import { Task } from './Task';
-import { todoListsAPI } from '../../api/todolist-api';
+import { tasksAPI, todoListsAPI } from '../../api/todolist-api';
 
 type TodoListPropsType = {
     title: string
@@ -65,16 +65,6 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
         dispatch(updateTodoListTitleAC(props.todoListID, title))
     }, [dispatch, props.todoListID])
 
-    //     .then((data) => {
-    //         console.log(data);
-    //     })
-    //     .then((data) => {
-    //         return todoListsAPI.getTodolists()
-    //     })
-    //     .then((data) => {
-    //         console.log(data);
-    //     })
-    // }
     const a = () => {
         todoListsAPI.getTodolists()
             .then((data) => {
@@ -83,13 +73,6 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
     }
     const b = () => {
         todoListsAPI.creacteTodolists()
-            .then((data) => {
-                console.log(data);
-            })
-    }
-
-    const c = () => {
-        todoListsAPI.getTodolists()
             .then((data) => {
                 console.log(data);
             })
@@ -104,11 +87,20 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
     }
 
     const d = () => {
-        todoListsAPI.deleteTodolists("0fa39d11-bfbf-4823-a213-b6057c608d93")
+        todoListsAPI.deleteTodolists('9acf3d84-851c-4921-a1df-53ee969175ae')
             .then((data) => {
                 console.log(data);
             })
     }
+
+    const c = () => {
+        tasksAPI.getTasks('d3bed191-9be2-4dce-8d71-c1722e3e2cf9')
+            .then((data) => {
+                console.log(data.data);
+            })
+    }
+
+
 
     return (
         <>
@@ -116,7 +108,7 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
             <button onClick={b}>creacte</button>
             <button onClick={d}>delete</button>
             <button onClick={i}>update</button>
-            <button onClick={a}>get</button>
+            <button onClick={c}>get Tasks</button>
             <div className="todo">
                 <h3>
                     <EditableSpan oldTitle={props.title} callBack={updateTodoListTitleHandler} />
