@@ -9,7 +9,8 @@ import { useDispatch } from 'react-redux';
 import { addTaskTaskAC, deleteAllTasksTaskAC, updateTaskTitleAC } from '../../store/reducers/tasksReducer';
 import { v1 } from 'uuid';
 import { Task } from './Task';
-import { tasksAPI, todoListsAPI } from '../../api/todolist-api';
+import { TaskStatus } from '../../api/todolist-api';
+
 
 type TodoListPropsType = {
     title: string
@@ -17,12 +18,7 @@ type TodoListPropsType = {
     todoListID: string
 }
 
-export type TaskType = {
-    id: string
-    title: string
-    isDone: boolean
 
-}
 
 const TodoList: FC<TodoListPropsType> = React.memo((props) => {
     let tasks = useAppSelector((state) => state.tasks[props.todoListID])
@@ -30,10 +26,10 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
 
 
     if (props.filter === 'active') {
-        tasks = tasks.filter(t => !t.isDone)
+        tasks = tasks.filter(t => t.status === TaskStatus.New)
     }
     if (props.filter === "completed") {
-        tasks = tasks.filter(t => t.isDone)
+        tasks = tasks.filter(t => t.status === TaskStatus.Completed)
     }
     if (props.filter === "firstThre") {
         tasks = tasks.slice(0, 3)
@@ -65,50 +61,10 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
         dispatch(updateTodoListTitleAC(props.todoListID, title))
     }, [dispatch, props.todoListID])
 
-    const a = () => {
-        todoListsAPI.getTodolists()
-            .then((data) => {
-                console.log(data);
-            })
-    }
-    const b = () => {
-        todoListsAPI.creacteTodolists()
-            .then((data) => {
-                console.log(data);
-            })
-    }
-
-
-    const i = () => {
-        todoListsAPI.updateTitleTodolists("0fa39d11-bfbf-4823-a213-b6057c608d93")
-            .then((data) => {
-                console.log(data);
-            })
-    }
-
-    const d = () => {
-        todoListsAPI.deleteTodolists('9acf3d84-851c-4921-a1df-53ee969175ae')
-            .then((data) => {
-                console.log(data);
-            })
-    }
-
-    const c = () => {
-        tasksAPI.getTasks('d3bed191-9be2-4dce-8d71-c1722e3e2cf9')
-            .then((data) => {
-                console.log(data.data);
-            })
-    }
-
-
 
     return (
         <>
-            <button onClick={a}>get</button>
-            <button onClick={b}>creacte</button>
-            <button onClick={d}>delete</button>
-            <button onClick={i}>update</button>
-            <button onClick={c}>get Tasks</button>
+
             <div className="todo">
                 <h3>
                     <EditableSpan oldTitle={props.title} callBack={updateTodoListTitleHandler} />
@@ -119,10 +75,9 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
                 </div>
 
                 <ul>
-                    {/* {tasksJSXElement} */}
                     {tasks?.map((t) => {
                         return <Task todoListID={props.todoListID} key={t.id} id={t.id}
-                            isDone={t.isDone}
+                            status={t.status}
                             title={t.title}
                             updateTaskTitle={updateTaskHandler}
                         />

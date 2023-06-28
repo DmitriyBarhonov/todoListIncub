@@ -1,35 +1,42 @@
 
 import { v1 } from 'uuid';
+import { TodoListType } from '../../api/todolist-api';
 export type FliterValuesType = 'all' | 'active' | 'completed' | 'firstThre'
-export type TodolistsType = { id: string, title: string, filter: FliterValuesType }
+
+
+export type TodolistsDomainType = TodoListType & {
+    filter: FliterValuesType
+}
 
 export let todolistID1 = v1()
 export let todolistID2 = v1()
 
-const initialState: TodolistsType[]  = [
-    { id: todolistID1, title: 'What to learn', filter: 'all' },
-    { id: todolistID2, title: 'What to buy', filter: 'all' },
+const initialState: TodolistsDomainType[] = [
+    { id: todolistID1, title: 'What to learn', filter: 'all', addedDate: "", order: 0 },
+    { id: todolistID2, title: 'What to buy', filter: 'all', addedDate: "", order: 0 },
 ]
 
 
-export const todoListReducer = (state: TodolistsType[] = initialState , action: AllAction): TodolistsType[] => {
+export const todoListReducer = (state: TodolistsDomainType[] = initialState, action: AllAction): TodolistsDomainType[] => {
 
     switch (action.type) {
         case 'CHANGE-FILTER':
             return state.map(el => el.id === action.payload.todoListID ? { ...el, filter: action.payload.newFilterValue } : el)
 
         case 'ADD-TODO':
-            const newTodoListItem: TodolistsType = {
+            const newTodoListItem: TodolistsDomainType = {
                 id: action.payload.newTodoListId,
                 title: action.payload.title,
-                filter: 'all'
+                filter: 'all',
+                addedDate: "",
+                order: 0
             }
             return [...state, newTodoListItem]
         case "UPDATE-TITLE":
             return state.map(el => el.id === action.payload.todoListID ? { ...el, title: action.payload.title } : el)
 
-            case "DELETE-TODO":
-                return state.filter(el => el.id !== action.payload.todoListID)
+        case "DELETE-TODO":
+            return state.filter(el => el.id !== action.payload.todoListID)
 
         default:
             return state
