@@ -3,7 +3,7 @@ import './App.css';
 import TodoList from './compomets/TodoLists/Todo';
 import { v1 } from 'uuid';
 import { AddItemForm } from './compomets/input/addItemForm';
-import { AddPureTaskAC } from './store/reducers/tasksReducer';
+import { AddPureTaskAC, setTasksTС } from './store/reducers/tasksReducer';
 import { TodolistsDomainType, addTodoListsAC, getTodoListTС } from './store/reducers/todoListReducer';
 import { useAppSelector } from './hook/useSelectorHook';
 import { tasksAPI, todoListsAPI } from './api/todolist-api';
@@ -16,6 +16,7 @@ const App = React.memo(() => {
 
     useEffect(()=>{
        dispatch(getTodoListTС())
+       dispatch(setTasksTС('e11e9b13-f410-4b4f-853a-a636c031c4eb'))
     },[dispatch])
 
     const addTodoLists = useCallback((newTitle: string) => {
