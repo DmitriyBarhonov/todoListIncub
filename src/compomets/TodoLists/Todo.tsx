@@ -24,6 +24,7 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
     let tasks = useAppSelector((state) => state.tasks[props.todoListID])
     const dispatch = useDispatch()
 
+  
 
     if (props.filter === 'active') {
         tasks = tasks.filter(t => t.status === TaskStatus.New)
@@ -75,7 +76,7 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
                 </div>
 
                 <ul>
-                    {tasks?.map((t) => {
+                    {tasks.map((t) => {
                         return <Task todoListID={props.todoListID} key={t.id} id={t.id}
                             status={t.status}
                             title={t.title}

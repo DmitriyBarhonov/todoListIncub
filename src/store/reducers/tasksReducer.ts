@@ -1,6 +1,7 @@
 
-import { TaskPriority, TaskStatus, TaskType } from '../../api/todolist-api';
-import { todolistID1, todolistID2 } from './todoListReducer';
+import { Dispatch } from 'redux';
+import { TaskPriority, TaskStatus, TaskType, tasksAPI } from '../../api/todolist-api';
+import { SetTodoListsACType, todolistID1, todolistID2 } from './todoListReducer';
 import { v1 } from 'uuid';
 
 export type AssocTaskType = {
@@ -41,10 +42,24 @@ const initialState: AssocTaskType = {
 
     ]
 }
+type AllAction = RemoveTaskACType | AddTaskACType | ChangeTaskStatusACType | DeleteAllTasksACType | UpdateTaskACType | AddPureTaskACType | SetTodoListsACType | SetTaskACType
 
 export const tasksReducer = (state: AssocTaskType = initialState, action: AllAction): AssocTaskType => {
 
     switch (action.type) {
+        // case  SetTodoList 
+        case "SET-TODO-LISTS":
+            const copyState = {
+                ...state
+            }
+            action.payload.todos.forEach((el) => {
+                copyState[el.id] = []
+            })
+            return copyState
+
+
+
+        // Case Tasks
         case 'REMOVE-TASK':
             return { ...state, [action.payload.todoListID]: state[action.payload.todoListID].filter(el => el.id !== action.payload.taskId) }
 
@@ -69,7 +84,6 @@ export const tasksReducer = (state: AssocTaskType = initialState, action: AllAct
             return { ...state, [action.payload.todoListID]: [] }
 
         case "CHANGE-STATUS":
-            // debugger
             return { ...state, [action.payload.todoListID]: state[action.payload.todoListID].map(el => el.id === action.payload.taskId ? { ...el, status: action.payload.status } : el) }
 
         case "DELETE-ALL":
@@ -83,7 +97,7 @@ export const tasksReducer = (state: AssocTaskType = initialState, action: AllAct
     }
 }
 
-type AllAction = RemoveTaskACType | AddTaskACType | ChangeTaskStatusACType | DeleteAllTasksACType | UpdateTaskACType | AddPureTaskACType
+
 
 type RemoveTaskACType = ReturnType<typeof removeTaskAC>
 
@@ -151,4 +165,25 @@ export const AddPureTaskAC = (todoListID: string) => {
             todoListID,
         }
     } as const
+}
+
+type SetTaskACType = ReturnType<typeof SetTaskAC>
+
+export const SetTaskAC = (task: TaskType[]) => {
+    return {
+        type: "SET-TASKS",
+        payload: {
+            task
+        }
+    } as const
+}
+
+
+export const getTodoListTС = (todoListID:string)=> (dispatch:Dispatch) => {
+    tasksAPI.getTasks(todoListID)
+        .then((data) => {
+            dispatch(SetTaskAC(data.data.items))
+            console.log(data.data);
+
+        })
 }
