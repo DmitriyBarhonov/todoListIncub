@@ -61,7 +61,7 @@ export const tasksReducer = (state: AssocTaskType = initialState, action: AllAct
         case 'REMOVE-TASK':
             return { ...state, [action.payload.todoListID]: state[action.payload.todoListID].filter(el => el.id !== action.payload.taskId) }
 
-            case 'SET-TASKS': 
+        case 'SET-TASKS':
             return {
                 ...state,
                 [action.payload.todoListID]: action.payload.task
@@ -172,7 +172,7 @@ export const AddPureTaskAC = (todoListID: string) => {
 
 type SetTaskACType = ReturnType<typeof SetTaskAC>
 
-export const SetTaskAC = (task: TaskType[], todoListID:string) => {
+export const SetTaskAC = (task: TaskType[], todoListID: string) => {
     return {
         type: "SET-TASKS",
         payload: {
@@ -183,11 +183,25 @@ export const SetTaskAC = (task: TaskType[], todoListID:string) => {
 }
 
 
-export const setTasksTС = (todoListID:string)=> (dispatch:Dispatch) => {
+export const setTasksTС = (todoListID: string) => (dispatch: Dispatch) => {
     tasksAPI.getTasks(todoListID)
         .then((data) => {
-            dispatch(SetTaskAC(data.data.items,todoListID))
+            dispatch(SetTaskAC(data.data.items, todoListID))
             console.log(data.data);
-
         })
+}
+
+export const deleteTaskTС = (todoListID: string, taskID: string) => (dispatch: Dispatch) => {
+    tasksAPI.deleeteTask(todoListID, taskID)
+    .then(()=>{
+       dispatch( removeTaskAC(todoListID, taskID))
+    })
+}
+
+export const addTaskTС = (todoListID: string, title: string) => (dispatch: Dispatch) => {
+    tasksAPI.creacteTask(todoListID, title)
+    .then((res)=>{
+
+       dispatch( addTaskTaskAC(todoListID, title, res.data.data.id))
+    })
 }

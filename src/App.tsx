@@ -16,7 +16,6 @@ const App = React.memo(() => {
 
     useEffect(()=>{
        dispatch(getTodoListTС())
-       dispatch(setTasksTС('e11e9b13-f410-4b4f-853a-a636c031c4eb'))
     },[dispatch])
 
     const addTodoLists = useCallback((newTitle: string) => {
@@ -56,7 +55,7 @@ const App = React.memo(() => {
     }
 
     const c = () => {
-        tasksAPI.getTasks('d3bed191-9be2-4dce-8d71-c1722e3e2cf9')
+        tasksAPI.getTasks('31462598-a12a-4855-94cc-20af9dfd7db3')
             .then((data) => {
                 console.log(data.data);
             })

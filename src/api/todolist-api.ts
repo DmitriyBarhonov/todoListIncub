@@ -99,18 +99,18 @@ export const todoListsAPI = {
 }
 
 export const tasksAPI = {
-    getTasks(todolistId: string) {
-        return instance.get<GetTasksResponse>(`todo-lists/${todolistId}/tasks`)
+    getTasks(todoListID: string) {
+        return instance.get<GetTasksResponse>(`todo-lists/${todoListID}/tasks`)
     },
-    creacteTask(todolistId: string, title: string) {
-        return instance.post<ResponseType<TaskType>>(`/todo-lists/${todolistId}/tasks/`, { title: title})
+    creacteTask(todoListID: string, title: string) {
+        return instance.post<ResponseType<TaskType>>(`todo-lists/${todoListID}/tasks/`, { title: title})
     },
 
-    deleeteTask(todolistId: string, taskId: string) {
-        return instance.delete<ResponseType>(`/todo-lists/${todolistId}/tasks/${taskId}`)
+    deleeteTask(todoListID: string, taskId: string) {
+        return instance.delete<ResponseType>(`todo-lists/${todoListID}/tasks/${taskId}`)
     },
-   updateTask(todolistId: string, taskId: string, model: updateTaskModelType) {
-        return instance.put<ResponseType>(`/todo-lists/${todolistId}/tasks/${taskId}`, model)
+   updateTask(todoListID: string, taskId: string, model: updateTaskModelType) {
+        return instance.put<ResponseType>(`todo-lists/${todoListID}/tasks/${taskId}`, model)
     },
 }
 

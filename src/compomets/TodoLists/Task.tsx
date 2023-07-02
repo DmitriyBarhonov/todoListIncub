@@ -1,11 +1,12 @@
 import "./../../App.css"
 import { useDispatch } from "react-redux"
-import { changeTaskStatusTaskAC, removeTaskAC } from "../../store/reducers/tasksReducer"
+import { changeTaskStatusTaskAC, deleteTaskTС, removeTaskAC } from "../../store/reducers/tasksReducer"
 import { SuperCheckBox } from "../Supercheck/SuperChek"
 import { EditableSpan } from "../editableSpan/editableSpan"
 import { FC, useCallback } from "react"
 import React from "react"
 import { TaskStatus } from "../../api/todolist-api"
+import { useTypeDispatch } from "../../store/store"
 
 type PropsTaskType = {
     todoListID: string
@@ -18,14 +19,14 @@ type PropsTaskType = {
 
 export const Task: FC<PropsTaskType> = React.memo( ({id,status,title,todoListID,updateTaskTitle}) => {
     const taskClasses = status ? "task_not_is_done" : "task"
-    const dispatch = useDispatch()
+    const dispatch = useTypeDispatch()
 
     const updateTitleTask = useCallback((title: string) => {
         updateTaskTitle(id, title);
     }, [updateTaskTitle, id]);
 
     const removeTask = useCallback(() => {
-        dispatch(removeTaskAC(todoListID, id));
+        dispatch(deleteTaskTС(todoListID, id));
     }, [dispatch, todoListID, id]);
     
     const changeTaskStatus = useCallback((e: boolean) => {
