@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect } from 'react';
 import './App.css';
-import TodoList from './TodoLists/Todo';
-import { AddItemForm } from './compomets/input/addItemForm';
-import { TodolistsDomainType, getTodoListTС, creacteTodolistsTС } from './store/reducers/todoListReducer';
-import { useAppSelector } from './hook/useSelectorHook';
-import { useTypeDispatch } from './store/store';
+import TodoList from '../TodoList/todolists/Todo';
+import { AddItemForm } from '../compomets/input/addItemForm';
+import { TodolistsDomainType, getTodoListTС, creacteTodolistsTС } from '../TodoList/todolists/todoListReducer';
+import { useAppSelector } from '../hook/useSelectorHook';
+import { useTypeDispatch } from './store';
 
 
 const App = React.memo(() => {

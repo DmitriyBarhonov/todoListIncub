@@ -1,14 +1,13 @@
-import { StateType } from './../store';
-import { Dispatch } from 'redux';
+import { AppStateType, ThunkCreatorType } from '../../app/store';
 import { TaskStatus, TaskType, UpdateTaskModelType, tasksAPI } from '../../api/todolist-api';
-import { SetTodoListsACType } from './todoListReducer';
+import { SetTodoListsACType } from '../todolists/todoListReducer';
 
 export type AssocTaskType = {
     [key: string]: TaskType[]
 }
 
 const initialState: AssocTaskType = {}
-type AllAction =
+export type ActionTasksType =
     ReturnType<typeof removeTaskAC>
     | ReturnType<typeof addTaskTaskAC>
     | ReturnType<typeof changeTaskStatusTaskAC>
@@ -18,7 +17,7 @@ type AllAction =
     | SetTodoListsACType
     | ReturnType<typeof SetTaskAC>
 
-export const tasksReducer = (state: AssocTaskType = initialState, action: AllAction): AssocTaskType => {
+export const tasksReducer = (state: AssocTaskType = initialState, action: ActionTasksType): AssocTaskType => {
 
     switch (action.type) {
         // case  SetTodoList 
@@ -136,28 +135,28 @@ export const SetTaskAC = (task: TaskType[], todoListID: string) => {
 }
 
 // Thunks-------------------------------------------------------------------
-export const setTasksTС = (todoListID: string) => (dispatch: Dispatch<AllAction>) => {
+export const setTasksTС = (todoListID: string):ThunkCreatorType => (dispatch ) => {
     tasksAPI.getTasks(todoListID)
         .then((data) => {
             dispatch(SetTaskAC(data.data.items, todoListID))
         })
 }
 
-export const deleteTaskTС = (todoListID: string, taskID: string) => (dispatch: Dispatch<AllAction>) => {
+export const deleteTaskTС = (todoListID: string, taskID: string):ThunkCreatorType => (dispatch ) => {
     tasksAPI.deleeteTask(todoListID, taskID)
         .then(() => {
             dispatch(removeTaskAC(todoListID, taskID))
         })
 }
 
-export const creacteTaskTС = (todoListID: string, title: string) => (dispatch: Dispatch<AllAction>) => {
+export const creacteTaskTС = (todoListID: string, title: string):ThunkCreatorType => (dispatch ) => {
     tasksAPI.creacteTask(todoListID, title)
         .then((res) => {
             dispatch(addTaskTaskAC(res.data.data.item))
         })
 }
 
-export const changeStatusTaskTС = (todoListID: string, taskId: string, status: TaskStatus) => (dispatch: Dispatch<AllAction>, getState: () => StateType) => {
+export const changeStatusTaskTС = (todoListID: string, taskId: string, status: TaskStatus): ThunkCreatorType => (dispatch, getState: () => AppStateType) => {
     const task = getState().tasks[todoListID].find((t) => t.id === taskId)
     const model: UpdateTaskModelType = {
         title: task!.title,

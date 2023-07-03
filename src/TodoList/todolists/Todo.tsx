@@ -1,14 +1,14 @@
 // import './App.css';
 import React, { FC, useCallback, useEffect } from 'react';
-import { AddItemForm } from '../compomets/input/addItemForm';
-import { EditableSpan } from '../compomets/editableSpan/editableSpan';
+import { AddItemForm } from '../../compomets/input/addItemForm';
+import { EditableSpan } from '../../compomets/editableSpan/editableSpan';
 import Button from '@mui/material/Button';
-import { FliterValuesType, changeFilterAC, deleteTodolistsTС, updateTitleTodolistsTС,} from '../store/reducers/todoListReducer';
-import { useAppSelector } from '../hook/useSelectorHook';
-import {  creacteTaskTС, deleteAllTasksTaskAC, setTasksTС, updateTaskTitleAC } from '../store/reducers/tasksReducer';
-import { Task } from './Task';
-import { TaskStatus } from '../api/todolist-api';
-import { useTypeDispatch } from '../store/store';
+import { FliterValuesType, changeFilterAC, deleteTodolistsTС, updateTitleTodolistsTС,} from '../../TodoList/todolists/todoListReducer';
+import { useAppSelector } from '../../hook/useSelectorHook';
+import {  creacteTaskTС, deleteAllTasksTaskAC, setTasksTС, updateTaskTitleAC } from '../../TodoList/tasks/tasksReducer';
+import { Task } from '../tasks/Task';
+import { TaskStatus } from '../../api/todolist-api';
+import { useTypeDispatch } from '../../app/store';
 
 
 type TodoListPropsType = {
