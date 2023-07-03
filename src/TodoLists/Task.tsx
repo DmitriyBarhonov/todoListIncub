@@ -1,12 +1,11 @@
-import "./../../App.css"
-
-import { changeStatusTaskTС, changeTaskStatusTaskAC, deleteTaskTС } from "../../store/reducers/tasksReducer"
-import { SuperCheckBox } from "../Supercheck/SuperChek"
-import { EditableSpan } from "../editableSpan/editableSpan"
+import "../App.css"
+import { changeStatusTaskTС,deleteTaskTС } from "../store/reducers/tasksReducer"
+import { SuperCheckBox } from "../compomets/Supercheck/SuperChek"
+import { EditableSpan } from "../compomets/editableSpan/editableSpan"
 import { FC, useCallback } from "react"
 import React from "react"
-import { TaskStatus } from "../../api/todolist-api"
-import { useTypeDispatch } from "../../store/store"
+import { TaskStatus } from "../api/todolist-api"
+import { useTypeDispatch } from "../store/store"
 
 type PropsTaskType = {
     todoListID: string
@@ -25,7 +24,7 @@ export const Task: FC<PropsTaskType> = React.memo(({ id, status, title, todoList
         updateTitleTaskHandler(id, title);
     }, [updateTitleTaskHandler, id]);
 
-    const removeTask = useCallback(() => {
+    const removeTask = useCallback(() => { 
         dispatch(deleteTaskTС(todoListID, id));
     }, [dispatch, todoListID, id]);
 

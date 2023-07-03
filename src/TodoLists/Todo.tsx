@@ -1,16 +1,14 @@
 // import './App.css';
 import React, { FC, useCallback, useEffect } from 'react';
-import { AddItemForm } from '../input/addItemForm';
-import { EditableSpan } from '../editableSpan/editableSpan';
+import { AddItemForm } from '../compomets/input/addItemForm';
+import { EditableSpan } from '../compomets/editableSpan/editableSpan';
 import Button from '@mui/material/Button';
-import { FliterValuesType, changeFilterAC, deleteTodoListAC, deleteTodolistsTС, updateTitleTodolistsTС, updateTodoListTitleAC } from '../../store/reducers/todoListReducer';
-import { useAppSelector } from '../../hook/useSelectorHook';
-import { useDispatch } from 'react-redux';
-import { addTaskTaskAC, creacteTaskTС, deleteAllTasksTaskAC, setTasksTС, updateTaskTitleAC } from '../../store/reducers/tasksReducer';
-import { v1 } from 'uuid';
+import { FliterValuesType, changeFilterAC, deleteTodolistsTС, updateTitleTodolistsTС,} from '../store/reducers/todoListReducer';
+import { useAppSelector } from '../hook/useSelectorHook';
+import {  creacteTaskTС, deleteAllTasksTaskAC, setTasksTС, updateTaskTitleAC } from '../store/reducers/tasksReducer';
 import { Task } from './Task';
-import { TaskStatus } from '../../api/todolist-api';
-import { useTypeDispatch } from '../../store/store';
+import { TaskStatus } from '../api/todolist-api';
+import { useTypeDispatch } from '../store/store';
 
 
 type TodoListPropsType = {
@@ -27,12 +25,12 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
 
   useEffect(()=>{
     dispatch(setTasksTС(props.todoListID))
-  },[])
+  },[props.todoListID, dispatch])
 
     if (props.filter === 'active') {
         tasks = tasks.filter(t => t.status === TaskStatus.New)
     }
-    if (props.filter === "completed") {
+    if (props.filter === "completed") { 
         tasks = tasks.filter(t => t.status === TaskStatus.Completed)
     }
     if (props.filter === "firstThre") {

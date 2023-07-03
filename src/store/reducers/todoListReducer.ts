@@ -15,20 +15,15 @@ const initialState: TodolistsDomainType[] = []
 
 export const todoListReducer = (state: TodolistsDomainType[] = initialState, action: AllAction): TodolistsDomainType[] => {
 
-    switch (action.type) {
+    switch (action.type) {  
         case 'CHANGE-FILTER':
             return state.map(el => el.id === action.payload.todoListID ? { ...el, filter: action.payload.newFilterValue } : el)
 
         case "SET-TODO-LISTS":
             return action.payload.todos.map((t) => ({ ...t, filter: "all" }))
 
-
         case 'ADD-TODO':
-            const newTodoListItem: TodolistsDomainType = {
-                ...action.payload.todoListItem,
-                filter: 'all',
-            }
-            return [newTodoListItem, ...state]
+            return [{ ...action.payload.todoListItem, filter: 'all', }, ...state]
         case "UPDATE-TITLE":
             return state.map(el => el.id === action.payload.todoListID ? { ...el, title: action.payload.title } : el)
 
@@ -41,7 +36,7 @@ export const todoListReducer = (state: TodolistsDomainType[] = initialState, act
 }
 
 type AllAction =
-ReturnType<typeof changeFilterAC>
+    ReturnType<typeof changeFilterAC>
     | ReturnType<typeof addTodoListsAC>
     | ReturnType<typeof updateTodoListTitleAC>
     | ReturnType<typeof deleteTodoListAC>
@@ -100,13 +95,13 @@ export const setTodoListsAC = (todos: TodoListType[]) => {
 
 // Thunks-------------------------------------------------------------------
 
-export const getTodoListTС = () => (dispatch: Dispatch) => {
+export const getTodoListTС = () => (dispatch: Dispatch<AllAction>) => {
     todoListsAPI.getTodolists()
         .then((res) => {
             dispatch(setTodoListsAC(res.data))
         })
 }
-export const creacteTodolistsTС = (title: string) => (dispatch: Dispatch) => {
+export const creacteTodolistsTС = (title: string) => (dispatch: Dispatch<AllAction>) => {
     todoListsAPI.creacteTodolists(title)
         .then((res) => {
             dispatch(addTodoListsAC(res.data.data.item))
@@ -115,14 +110,14 @@ export const creacteTodolistsTС = (title: string) => (dispatch: Dispatch) => {
         })
 }
 
-export const deleteTodolistsTС = (todoListID: string) => (dispatch: Dispatch) => {
+export const deleteTodolistsTС = (todoListID: string) => (dispatch: Dispatch<AllAction>) => {
     todoListsAPI.deleteTodolists(todoListID)
         .then((res) => {
             dispatch(deleteTodoListAC(todoListID))
             console.log(res.data);
         })
 }
-export const updateTitleTodolistsTС = (todoListID: string, title: string) => (dispatch: Dispatch) => {
+export const updateTitleTodolistsTС = (todoListID: string, title: string) => (dispatch: Dispatch<AllAction>) => {
     todoListsAPI.updateTitleTodolists(todoListID, title)
         .then((res) => {
             dispatch(updateTodoListTitleAC(todoListID, title))

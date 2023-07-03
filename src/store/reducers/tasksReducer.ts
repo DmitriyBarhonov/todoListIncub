@@ -1,9 +1,7 @@
 import { StateType } from './../store';
-
 import { Dispatch } from 'redux';
 import { TaskStatus, TaskType, UpdateTaskModelType, tasksAPI } from '../../api/todolist-api';
 import { SetTodoListsACType } from './todoListReducer';
-import { v1 } from 'uuid';
 
 export type AssocTaskType = {
     [key: string]: TaskType[]
@@ -11,7 +9,7 @@ export type AssocTaskType = {
 
 const initialState: AssocTaskType = {}
 type AllAction =
-ReturnType<typeof removeTaskAC>
+    ReturnType<typeof removeTaskAC>
     | ReturnType<typeof addTaskTaskAC>
     | ReturnType<typeof changeTaskStatusTaskAC>
     | ReturnType<typeof deleteAllTasksTaskAC>
@@ -38,10 +36,7 @@ export const tasksReducer = (state: AssocTaskType = initialState, action: AllAct
             return { ...state, [action.payload.todoListID]: state[action.payload.todoListID].filter(el => el.id !== action.payload.taskId) }
 
         case 'SET-TASKS':
-            return {
-                ...state,
-                [action.payload.todoListID]: action.payload.task
-            }
+            return { ...state, [action.payload.todoListID]: action.payload.task }
 
         case "ADD-TASK":
             return { ...state, [action.payload.task.todoListId]: [action.payload.task, ...state[action.payload.task.todoListId]] }
@@ -50,14 +45,20 @@ export const tasksReducer = (state: AssocTaskType = initialState, action: AllAct
             return { ...state, [action.payload.todoListID]: [] }
 
         case "CHANGE-STATUS":
-            return { ...state, [action.payload.todoListID]: state[action.payload.todoListID].map(el => el.id === action.payload.taskId ? { ...el, status: action.payload.status } : el) }
+            return {
+                ...state, [action.payload.todoListID]: state[action.payload.todoListID].map(el => el.id === action.payload.taskId ?
+                    { ...el, status: action.payload.status } : el)
+            }
 
         case "DELETE-ALL":
             return { ...state, [action.payload.todoListID]: [] }
 
 
         case "UPDATE-TASK-TITLE":
-            return { ...state, [action.payload.todoListID]: state[action.payload.todoListID].map(el => el.id === action.payload.taskId ? { ...el, title: action.payload.title } : el) }
+            return {
+                ...state, [action.payload.todoListID]: state[action.payload.todoListID].map(el => el.id === action.payload.taskId ?
+                    { ...el, title: action.payload.title } : el)
+            }
         default:
             return state
     }
@@ -135,28 +136,28 @@ export const SetTaskAC = (task: TaskType[], todoListID: string) => {
 }
 
 // Thunks-------------------------------------------------------------------
-export const setTasksTС = (todoListID: string) => (dispatch: Dispatch) => {
+export const setTasksTС = (todoListID: string) => (dispatch: Dispatch<AllAction>) => {
     tasksAPI.getTasks(todoListID)
         .then((data) => {
             dispatch(SetTaskAC(data.data.items, todoListID))
         })
 }
 
-export const deleteTaskTС = (todoListID: string, taskID: string) => (dispatch: Dispatch) => {
+export const deleteTaskTС = (todoListID: string, taskID: string) => (dispatch: Dispatch<AllAction>) => {
     tasksAPI.deleeteTask(todoListID, taskID)
         .then(() => {
             dispatch(removeTaskAC(todoListID, taskID))
         })
 }
 
-export const creacteTaskTС = (todoListID: string, title: string) => (dispatch: Dispatch) => {
+export const creacteTaskTС = (todoListID: string, title: string) => (dispatch: Dispatch<AllAction>) => {
     tasksAPI.creacteTask(todoListID, title)
         .then((res) => {
             dispatch(addTaskTaskAC(res.data.data.item))
         })
 }
 
-export const changeStatusTaskTС = (todoListID: string, taskId: string, status: TaskStatus) => (dispatch: Dispatch, getState: () => StateType) => {
+export const changeStatusTaskTС = (todoListID: string, taskId: string, status: TaskStatus) => (dispatch: Dispatch<AllAction>, getState: () => StateType) => {
     const task = getState().tasks[todoListID].find((t) => t.id === taskId)
     const model: UpdateTaskModelType = {
         title: task!.title,
