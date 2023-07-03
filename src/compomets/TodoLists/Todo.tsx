@@ -3,10 +3,10 @@ import React, { FC, useCallback, useEffect } from 'react';
 import { AddItemForm } from '../input/addItemForm';
 import { EditableSpan } from '../editableSpan/editableSpan';
 import Button from '@mui/material/Button';
-import { FliterValuesType, changeFilterAC, deleteTodoListAC, updateTodoListTitleAC } from '../../store/reducers/todoListReducer';
+import { FliterValuesType, changeFilterAC, deleteTodoListAC, deleteTodolistsTС, updateTitleTodolistsTС, updateTodoListTitleAC } from '../../store/reducers/todoListReducer';
 import { useAppSelector } from '../../hook/useSelectorHook';
 import { useDispatch } from 'react-redux';
-import { addTaskTaskAC, addTaskTС, deleteAllTasksTaskAC, setTasksTС, updateTaskTitleAC } from '../../store/reducers/tasksReducer';
+import { addTaskTaskAC, creacteTaskTС, deleteAllTasksTaskAC, setTasksTС, updateTaskTitleAC } from '../../store/reducers/tasksReducer';
 import { v1 } from 'uuid';
 import { Task } from './Task';
 import { TaskStatus } from '../../api/todolist-api';
@@ -39,32 +39,34 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
         tasks = tasks.slice(0, 3)
     }
 
+    // TodoListCallBack----------------------------
+    const deleteTodoListHandler = useCallback(() => {
+        // dispatch(deleteAllTasksTaskAC(props.todoListID));
+        dispatch(deleteTodolistsTС(props.todoListID))
+    }, [dispatch, props.todoListID]);
+
+    const updateTodoListTitleHandler = useCallback((title: string) => {
+        dispatch(updateTitleTodolistsTС(props.todoListID, title))
+    }, [dispatch, props.todoListID])
+
+// TaskCallBack----------------------------
     const changeFilter = useCallback((todoListID: string, filter: FliterValuesType) => () => {
         dispatch(changeFilterAC(todoListID, filter));
     }, [dispatch]);
 
-    const updateTaskHandler = useCallback((taskId: string, title: string) => {
+    const updateTitleTaskHandler = useCallback((taskId: string, title: string) => {
         dispatch(updateTaskTitleAC(props.todoListID, taskId, title));
     }, [dispatch, props.todoListID]);
 
-    const deleteTodoListHandler = useCallback(() => {
-        dispatch(deleteTodoListAC(props.todoListID));
-        dispatch(deleteAllTasksTaskAC(props.todoListID));
-    }, [dispatch, props.todoListID]);
-
-    const hendlerDeleteAllTasks = useCallback(() => {
+  
+    const deleteAllTasksHandler = useCallback(() => {
         dispatch(deleteAllTasksTaskAC(props.todoListID));
     }, [dispatch, props.todoListID]);
 
     const addTaskHandler = useCallback((title: string) => {
-        // const newTasktId = v1()
-        // dispatch(addTaskTaskAC(props.todoListID, title, newTasktId))
-        dispatch(addTaskTС(props.todoListID, title))
+        dispatch(creacteTaskTС(props.todoListID, title))
     }, [dispatch, props.todoListID])
 
-    const updateTodoListTitleHandler = useCallback((title: string) => {
-        dispatch(updateTodoListTitleAC(props.todoListID, title))
-    }, [dispatch, props.todoListID])
 
 
     return (
@@ -80,17 +82,17 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
                 </div>
 
                 <ul>
-                    {tasks.map((t) => {
+                    {tasks?.map((t) => {
                         return <Task todoListID={props.todoListID} key={t.id} id={t.id}
                             status={t.status}
                             title={t.title}
-                            updateTaskTitle={updateTaskHandler}
+                            updateTitleTaskHandler={updateTitleTaskHandler}
                         />
                     })}
                 </ul>
 
                 <div>
-                    <div><button onClick={hendlerDeleteAllTasks}>Delete All</button></div>
+                    <div><button onClick={deleteAllTasksHandler}>Delete All</button></div>
                     <button className={props.filter === "all" ? "filter_btn_active" : ""} onClick={changeFilter(props.todoListID, "all")}>All</button>
                     <button className={props.filter === "active" ? "filter_btn_active" : ""} onClick={changeFilter(props.todoListID, "active")}>Active</button>
                     <button className={props.filter === "completed" ? "filter_btn_active" : ""} onClick={changeFilter(props.todoListID, "completed")}>Completed</button>

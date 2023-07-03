@@ -1,6 +1,6 @@
 import "./../../App.css"
-import { useDispatch } from "react-redux"
-import { changeTaskStatusTaskAC, deleteTaskTС, removeTaskAC } from "../../store/reducers/tasksReducer"
+
+import { changeStatusTaskTС, changeTaskStatusTaskAC, deleteTaskTС } from "../../store/reducers/tasksReducer"
 import { SuperCheckBox } from "../Supercheck/SuperChek"
 import { EditableSpan } from "../editableSpan/editableSpan"
 import { FC, useCallback } from "react"
@@ -13,31 +13,31 @@ type PropsTaskType = {
     id: string
     status: any
     title: string
-    updateTaskTitle:(taskId: string, title: string)=> void
+    updateTitleTaskHandler: (taskId: string, title: string) => void
 }
 
 
-export const Task: FC<PropsTaskType> = React.memo( ({id,status,title,todoListID,updateTaskTitle}) => {
+export const Task: FC<PropsTaskType> = React.memo(({ id, status, title, todoListID, updateTitleTaskHandler }) => {
     const taskClasses = status ? "task_not_is_done" : "task"
     const dispatch = useTypeDispatch()
 
     const updateTitleTask = useCallback((title: string) => {
-        updateTaskTitle(id, title);
-    }, [updateTaskTitle, id]);
+        updateTitleTaskHandler(id, title);
+    }, [updateTitleTaskHandler, id]);
 
     const removeTask = useCallback(() => {
         dispatch(deleteTaskTС(todoListID, id));
     }, [dispatch, todoListID, id]);
-    
+
     const changeTaskStatus = useCallback((e: boolean) => {
         const newStatus = e ? TaskStatus.Completed : TaskStatus.New
-        dispatch(changeTaskStatusTaskAC(todoListID, id, newStatus))
+        dispatch(changeStatusTaskTС(todoListID, id, newStatus))
     }, [dispatch, todoListID, id]);
 
 
     return (
         <li className={taskClasses} >
-            <SuperCheckBox callBack={changeTaskStatus } checked={status} />
+            <SuperCheckBox callBack={changeTaskStatus} checked={status} />
             <EditableSpan callBack={updateTitleTask} oldTitle={title} />
             <button onClick={removeTask}>X</button>
         </li>
