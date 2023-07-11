@@ -1,5 +1,5 @@
 import { AppStateType, ThunkCreatorType } from '../../app/store';
-import { TaskPriority, TaskStatus, TaskType, UpdateTaskModelType, tasksAPI } from '../../api/todolist-api';
+import { ResultCode, TaskPriority, TaskStatus, TaskType, UpdateTaskModelType, tasksAPI } from '../../api/todolist-api';
 import { SetTodoListsACType } from '../todolists/todoListReducer';
 import { SetStatusType, setStatusAC, SetErrorType, setErrorAC } from '../../app/appReducer';
 import { Dispatch } from 'redux';
@@ -147,11 +147,7 @@ export const SetTaskAC = (task: TaskType[], todoListID: string) => {
 
 // ENUM
 
-enum ResultCode {
-    succeeded = 0,
-    error = 1,
-    captchaError = 10
-}
+
 
 // Thunks-------------------------------------------------------------------
 export const setTasksTС = (todoListID: string): ThunkCreatorType => async (dispatch: Dispatch<ActionTasksType>) => {
@@ -170,6 +166,7 @@ export const deleteTaskTС = (todoListID: string, taskID: string): ThunkCreatorT
 
 export const addTaskTС = (todoListID: string, title: string): ThunkCreatorType => async (dispatch: Dispatch<ActionTasksType>) => {
     dispatch(setStatusAC("loading"))
+  try {
     const res = await tasksAPI.creacteTask(todoListID, title)
     if (res.data.resultCode === ResultCode.succeeded) {
         dispatch(addTaskTaskAC(res.data.data.item))
@@ -184,6 +181,10 @@ export const addTaskTС = (todoListID: string, title: string): ThunkCreatorType 
         }
 
     }
+  } catch (error) {
+    dispatch(setErrorAC(error + "network"))
+    dispatch(setStatusAC('succeeded'))
+  }
 }
 
 export const updateTaskTС = (todoListID: string, taskId: string, domainModel: UpdateDomainTaskModelType): ThunkCreatorType => async (dispatch: Dispatch<ActionTasksType>, getState: () => AppStateType) => {
@@ -199,10 +200,25 @@ export const updateTaskTС = (todoListID: string, taskId: string, domainModel: U
         status: task!.status,
         ...domainModel
     }
-    console.log(ApiModel);
 
-    await tasksAPI.updateTask(todoListID, taskId, ApiModel)
+    try {
+        const res = await tasksAPI.updateTask(todoListID, taskId, ApiModel)
+        if (res.data.resultCode === ResultCode.succeeded) {
+            dispatch(updateTaskAC(todoListID, taskId, ApiModel))
+            dispatch(setStatusAC('succeeded'))
+        } else {
+            if (res.data.messages[0]) {
+                dispatch(setErrorAC(res.data.messages[0]))
+                dispatch(setStatusAC('succeeded'))
+            } else {
+                dispatch(setErrorAC("Some Error"))
+                dispatch(setStatusAC('succeeded'))
+            }
 
-    dispatch(updateTaskAC(todoListID, taskId, ApiModel))
-    dispatch(setStatusAC('succeeded'))
+        }
+    } catch (error) {
+        dispatch(setErrorAC(error + "network"))
+        dispatch(setStatusAC('succeeded'))
+    }
+
 }

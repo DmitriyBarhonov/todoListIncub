@@ -9,12 +9,14 @@ import { addTaskTС, updateTaskTС, deleteAllTasksTaskAC, setTasksTС } from '..
 import { Task } from '../tasks/Task';
 import { TaskStatus } from '../../api/todolist-api';
 import { useTypeDispatch } from '../../app/store';
+import { RequestStatusType } from '../../app/appReducer';
 
 
 type TodoListPropsType = {
     title: string
     filter: any
     todoListID: string
+    entityStatus: RequestStatusType
 }
 
 
@@ -39,6 +41,7 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
 
     // TodoListCallBack----------------------------
     const deleteTodoList = useCallback(() => {
+        
         dispatch(deleteTodolistsTС(props.todoListID))
     }, [dispatch, props.todoListID]);
 
@@ -73,7 +76,7 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
                 <h3>
                     <EditableSpan oldTitle={props.title} callBack={updateTodoListTitle} />
                 </h3>
-                <Button variant="contained" onClick={deleteTodoList}>Delete Todo List</Button>
+                <Button disabled={props.entityStatus === 'loading'} variant="contained" onClick={deleteTodoList}>Delete Todo List</Button>
                 <div>
                     <AddItemForm callBack={addTask} />
                 </div>

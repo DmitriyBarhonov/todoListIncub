@@ -37,6 +37,7 @@ const App = React.memo(() => {
                             todoListID={el.id}
                             filter={el.filter}
                             title={el.title}
+                            entityStatus={el.entityStatus}
                         />
                     )
                 })}

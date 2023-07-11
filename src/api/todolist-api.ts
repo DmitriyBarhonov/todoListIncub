@@ -72,6 +72,12 @@ export type UpdateTaskModelType = {
     deadline: string
 }
 
+// result code
+export enum ResultCode {
+    succeeded = 0,
+    error = 1,
+    captchaError = 10
+}
 
 // root API
 const instance = axios.create({
@@ -85,7 +91,7 @@ const instance = axios.create({
 // TodoList API--------------------------------------------------
 export const todoListsAPI = {
     getTodolists() {
-        return instance.get<Array<TodoListType>>("todo-lists")
+        return instance.get<TodoListType[]>("todo-lists")
     },
     creacteTodolists(title: string) {
         return instance.post<ResponseType<{ item: TodoListType }>, AxiosResponse<ResponseType<{ item: TodoListType }>, {title: string}> >("todo-lists", {title})

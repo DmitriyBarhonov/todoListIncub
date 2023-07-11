@@ -1,15 +1,15 @@
 
 import { TodoListType, todoListsAPI } from '../../api/todolist-api';
 import { Dispatch } from "redux"
-import { AppActionsType, AppStateType, ThunkCreatorType } from '../../app/store';
-import { ThunkAction } from 'redux-thunk';
-import { SetStatusType, setStatusAC } from '../../app/appReducer';
+import { ThunkCreatorType } from '../../app/store';
+import { RequestStatusType, SetStatusType, setStatusAC } from '../../app/appReducer';
 
 
 
 // Types
 export type TodolistsDomainType = TodoListType & {
     filter: FliterValuesType
+    entityStatus: RequestStatusType
 }
 export type FliterValuesType = 'all' | 'active' | 'completed' | 'firstThre'
 
@@ -18,6 +18,7 @@ export type ActionTodoLitsType =
     | ReturnType<typeof addTodoListsAC>
     | ReturnType<typeof updateTodoListTitleAC>
     | ReturnType<typeof deleteTodoListAC>
+    | ReturnType<typeof changeTodoListStatusAC>
     | SetTodoListsACType
     | SetStatusType
 
@@ -34,15 +35,17 @@ export const todoListReducer = (state: TodolistsDomainType[] = initialState, act
             return state.map(el => el.id === action.payload.todoListID ? { ...el, filter: action.payload.newFilterValue } : el)
 
         case "SET-TODO-LISTS":
-            return action.payload.todos.map((t) => ({ ...t, filter: "all" }))
+            return action.payload.todos.map((t) => ({ ...t, filter: "all", entityStatus: 'idle' }))
 
         case 'ADD-TODO':
-            return [{ ...action.payload.todoListItem, filter: 'all', }, ...state]
+            return [{ ...action.payload.todoListItem, filter: 'all', entityStatus: 'idle' }, ...state]
         case "UPDATE-TITLE":
             return state.map(el => el.id === action.payload.todoListID ? { ...el, title: action.payload.title } : el)
 
         case "DELETE-TODO":
             return state.filter(el => el.id !== action.payload.todoListID)
+        case "CHANGE-TODOLIST-STATUS":
+            return state.map(el => el.id === action.payload.todoListID ? {...el, entityStatus: action.payload.entityStatus} : el)
 
         default:
             return state
@@ -59,6 +62,15 @@ export const changeFilterAC = (todoListID: string, newFilterValue: FliterValuesT
         payload: {
             todoListID,
             newFilterValue
+        }
+    } as const
+}
+export const changeTodoListStatusAC = (todoListID: string, entityStatus: RequestStatusType) => {
+    return {
+        type: "CHANGE-TODOLIST-STATUS",
+        payload: {
+            todoListID,
+            entityStatus
         }
     } as const
 }
@@ -117,10 +129,12 @@ export const creacteTodolistsTС = (title: string): ThunkCreatorType => async (d
 }
 
 export const deleteTodolistsTС = (todoListID: string): ThunkCreatorType => async (dispatch: Dispatch<ActionTodoLitsType>) => {
+    dispatch(changeTodoListStatusAC(todoListID, "loading"))
     dispatch(setStatusAC("loading"))
     await todoListsAPI.deleteTodolists(todoListID)
     dispatch(deleteTodoListAC(todoListID))
     dispatch(setStatusAC("succeeded"))
+    dispatch(changeTodoListStatusAC(todoListID, "idle"))
 }
 export const updateTitleTodolistsTС = (todoListID: string, title: string) => async (dispatch: Dispatch<ActionTodoLitsType>) => {
     dispatch(setStatusAC("loading"))
@@ -130,3 +144,4 @@ export const updateTitleTodolistsTС = (todoListID: string, title: string) => as
     console.log(res);
 }
 
+// Сделать обработку ошибок как в тасках 
