@@ -3,6 +3,7 @@ import {AnyAction, applyMiddleware, combineReducers, legacy_createStore as creat
 import { ActionTasksType, tasksReducer } from "../TodoList/tasks/tasksReducer";
 import  thunkMiddleware, { ThunkAction, ThunkDispatch } from "redux-thunk"
 import { useDispatch } from 'react-redux';
+import { appReducer } from './appReducer';
 
 
 
@@ -18,7 +19,8 @@ export type ThunkCreatorType = ThunkAction<void, AppStateType, unknown, AppActio
 
 let RootReducers  = combineReducers({
     tasks: tasksReducer,
-    todolists: todoListReducer
+    todolists: todoListReducer,
+    app: appReducer
 })
 
 export const useTypeDispatch = ()=> useDispatch<AppDispatchType>()

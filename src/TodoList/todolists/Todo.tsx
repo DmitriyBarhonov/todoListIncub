@@ -3,9 +3,9 @@ import React, { FC, useCallback, useEffect } from 'react';
 import { AddItemForm } from '../../compomets/input/addItemForm';
 import { EditableSpan } from '../../compomets/editableSpan/editableSpan';
 import Button from '@mui/material/Button';
-import { FliterValuesType, changeFilterAC, deleteTodolistsTС, updateTitleTodolistsTС,} from '../../TodoList/todolists/todoListReducer';
+import { FliterValuesType, changeFilterAC, deleteTodolistsTС, updateTitleTodolistsTС, } from '../../TodoList/todolists/todoListReducer';
 import { useAppSelector } from '../../hook/useSelectorHook';
-import {  creacteTaskTС, deleteAllTasksTaskAC, setTasksTС, updateTaskTitleAC } from '../../TodoList/tasks/tasksReducer';
+import { addTaskTС, updateTaskTС, deleteAllTasksTaskAC, setTasksTС } from '../../TodoList/tasks/tasksReducer';
 import { Task } from '../tasks/Task';
 import { TaskStatus } from '../../api/todolist-api';
 import { useTypeDispatch } from '../../app/store';
@@ -23,14 +23,14 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
     let tasks = useAppSelector((state) => state.tasks[props.todoListID])
     const dispatch = useTypeDispatch()
 
-  useEffect(()=>{
-    dispatch(setTasksTС(props.todoListID))
-  },[props.todoListID, dispatch])
+    useEffect(() => {
+        dispatch(setTasksTС(props.todoListID))
+    }, [props.todoListID, dispatch])
 
     if (props.filter === 'active') {
         tasks = tasks.filter(t => t.status === TaskStatus.New)
     }
-    if (props.filter === "completed") { 
+    if (props.filter === "completed") {
         tasks = tasks.filter(t => t.status === TaskStatus.Completed)
     }
     if (props.filter === "firstThre") {
@@ -38,31 +38,30 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
     }
 
     // TodoListCallBack----------------------------
-    const deleteTodoListHandler = useCallback(() => {
-        // dispatch(deleteAllTasksTaskAC(props.todoListID));
+    const deleteTodoList = useCallback(() => {
         dispatch(deleteTodolistsTС(props.todoListID))
     }, [dispatch, props.todoListID]);
 
-    const updateTodoListTitleHandler = useCallback((title: string) => {
+    const updateTodoListTitle = useCallback((title: string) => {
         dispatch(updateTitleTodolistsTС(props.todoListID, title))
     }, [dispatch, props.todoListID])
 
-// TaskCallBack----------------------------
+    // TaskCallBack----------------------------
     const changeFilter = useCallback((todoListID: string, filter: FliterValuesType) => () => {
         dispatch(changeFilterAC(todoListID, filter));
     }, [dispatch]);
 
-    const updateTitleTaskHandler = useCallback((taskId: string, title: string) => {
-        dispatch(updateTaskTitleAC(props.todoListID, taskId, title));
+    const updateTitleTask = useCallback((taskId: string, title: string) => {
+        dispatch(updateTaskTС(props.todoListID, taskId, {title}));
     }, [dispatch, props.todoListID]);
 
-  
-    const deleteAllTasksHandler = useCallback(() => {
+
+    const deleteAllTasks = useCallback(() => {
         dispatch(deleteAllTasksTaskAC(props.todoListID));
     }, [dispatch, props.todoListID]);
 
-    const addTaskHandler = useCallback((title: string) => {
-        dispatch(creacteTaskTС(props.todoListID, title))
+    const addTask = useCallback((title: string) => {
+        dispatch(addTaskTС(props.todoListID, title))
     }, [dispatch, props.todoListID])
 
 
@@ -72,11 +71,11 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
 
             <div className="todo">
                 <h3>
-                    <EditableSpan oldTitle={props.title} callBack={updateTodoListTitleHandler} />
+                    <EditableSpan oldTitle={props.title} callBack={updateTodoListTitle} />
                 </h3>
-                <Button variant="contained" onClick={deleteTodoListHandler}>Delete Todo List</Button>
+                <Button variant="contained" onClick={deleteTodoList}>Delete Todo List</Button>
                 <div>
-                    <AddItemForm callBack={addTaskHandler} />
+                    <AddItemForm callBack={addTask} />
                 </div>
 
                 <ul>
@@ -84,13 +83,13 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
                         return <Task todoListID={props.todoListID} key={t.id} id={t.id}
                             status={t.status}
                             title={t.title}
-                            updateTitleTaskHandler={updateTitleTaskHandler}
+                            updateTitleTask={updateTitleTask}
                         />
                     })}
                 </ul>
 
                 <div>
-                    <div><button onClick={deleteAllTasksHandler}>Delete All</button></div>
+                    <div><button onClick={deleteAllTasks}>Delete All</button></div>
                     <button className={props.filter === "all" ? "filter_btn_active" : ""} onClick={changeFilter(props.todoListID, "all")}>All</button>
                     <button className={props.filter === "active" ? "filter_btn_active" : ""} onClick={changeFilter(props.todoListID, "active")}>Active</button>
                     <button className={props.filter === "completed" ? "filter_btn_active" : ""} onClick={changeFilter(props.todoListID, "completed")}>Completed</button>

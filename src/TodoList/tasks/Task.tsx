@@ -1,43 +1,49 @@
 import "../../app/App.css"
-import { changeStatusTaskTС,deleteTaskTС } from "./tasksReducer"
+import { updateTaskTС,deleteTaskTС } from "./tasksReducer"
 import { SuperCheckBox } from "../../compomets/Supercheck/SuperChek"
 import { EditableSpan } from "../../compomets/editableSpan/editableSpan"
 import { FC, useCallback } from "react"
 import React from "react"
 import { TaskStatus } from "../../api/todolist-api"
 import { useTypeDispatch } from "../../app/store"
+import LinearProgress from "@mui/material/LinearProgress/LinearProgress"
 
 type PropsTaskType = {
     todoListID: string
     id: string
     status: any
     title: string
-    updateTitleTaskHandler: (taskId: string, title: string) => void
+    updateTitleTask: (taskId: string, title: string) => void
 }
 
 
-export const Task: FC<PropsTaskType> = React.memo(({ id, status, title, todoListID, updateTitleTaskHandler }) => {
+export const Task: FC<PropsTaskType> = React.memo(({ id, status, title, todoListID, updateTitleTask }) => {
     const taskClasses = status ? "task_not_is_done" : "task"
     const dispatch = useTypeDispatch()
 
-    const updateTitleTask = useCallback((title: string) => {
-        updateTitleTaskHandler(id, title);
-    }, [updateTitleTaskHandler, id]);
+    const updateTitleTaskHeandler = useCallback((title: string) => {
+        updateTitleTask(id, title);
+    }, [updateTitleTask, id]);
 
     const removeTask = useCallback(() => { 
         dispatch(deleteTaskTС(todoListID, id));
     }, [dispatch, todoListID, id]);
 
-    const changeTaskStatus = useCallback((e: boolean) => {
-        const newStatus = e ? TaskStatus.Completed : TaskStatus.New
-        dispatch(changeStatusTaskTС(todoListID, id, newStatus))
+    const changeTaskStatus = useCallback((checked: boolean) => {
+       
+        
+        const newStatus = checked ? TaskStatus.Completed : TaskStatus.InProgress
+       
+        
+        dispatch(updateTaskTС(todoListID, id, {status:newStatus}))
     }, [dispatch, todoListID, id]);
 
 
     return (
         <li className={taskClasses} >
             <SuperCheckBox callBack={changeTaskStatus} checked={status} />
-            <EditableSpan callBack={updateTitleTask} oldTitle={title} />
+           
+            <EditableSpan callBack={updateTitleTaskHeandler} oldTitle={title} />
             <button onClick={removeTask}>X</button>
         </li>
     )

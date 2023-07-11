@@ -66,7 +66,6 @@ type GetTasksResponse = {
 export type UpdateTaskModelType = { 
     title: string
     description: string
-    completed: boolean
     status: TaskStatus
     priority: TaskPriority
     startDate: string

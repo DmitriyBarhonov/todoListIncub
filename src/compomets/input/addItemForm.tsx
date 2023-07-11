@@ -11,17 +11,20 @@ export type AddItemFromPropsType = {
 export const AddItemForm = React.memo((props: AddItemFromPropsType) => {
     const [title, setTitle] = useState('')
     const titleMaxLength = 25
-    const istitleLengthTooLong: boolean = title.length > titleMaxLength
+    // const istitleLengthTooLong: boolean = title.length > titleMaxLength
     const isAddBtnDisabled: boolean = title.length === 0 || title.length > titleMaxLength
     const style = { maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px', color: "black" }
 
-    
+
     const tasckHeandler = () => {
         const trimedTitle = title.trim()
-        if (trimedTitle && !isAddBtnDisabled){
-            props.callBack(title) 
-            setTitle('')
-        }
+        // if (trimedTitle && !isAddBtnDisabled){
+        //     props.callBack(title) 
+        //     setTitle('')
+        // }
+
+        props.callBack(title)
+        setTitle('')
     }
 
     const AddTaskOnKey = (e: KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && !isAddBtnDisabled && tasckHeandler()
@@ -32,7 +35,7 @@ export const AddItemForm = React.memo((props: AddItemFromPropsType) => {
             <input
                 placeholder='Max  25 simbols' onKeyDown={AddTaskOnKey} value={title} onChange={setTitleHeadler} />
             <Button style={style} variant="contained" onClick={tasckHeandler}>+</Button>
-            {istitleLengthTooLong && <div>Title is too long</div>}
+            {/* {istitleLengthTooLong && <div>Title is too long</div>} */}
         </>
     )
 }) 

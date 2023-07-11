@@ -12,6 +12,8 @@ export const SuperCheckBox = React.memo((props: TypeChekBox) => {
     const checked = props.checked === TaskStatus.Completed 
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        console.log(e.currentTarget.checked);
+        
         props.callBack(e.currentTarget.checked)
     }
     return (

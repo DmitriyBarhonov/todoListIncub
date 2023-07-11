@@ -3,6 +3,7 @@ import { TodoListType, todoListsAPI } from '../../api/todolist-api';
 import { Dispatch } from "redux"
 import { AppActionsType, AppStateType, ThunkCreatorType } from '../../app/store';
 import { ThunkAction } from 'redux-thunk';
+import { SetStatusType, setStatusAC } from '../../app/appReducer';
 
 
 
@@ -18,6 +19,7 @@ export type ActionTodoLitsType =
     | ReturnType<typeof updateTodoListTitleAC>
     | ReturnType<typeof deleteTodoListAC>
     | SetTodoListsACType
+    | SetStatusType
 
 
 
@@ -101,31 +103,30 @@ export const setTodoListsAC = (todos: TodoListType[]) => {
 
 // Thunks-------------------------------------------------------------------
 
-export const getTodoListTС = (): ThunkCreatorType => async (dispatch) => {
+export const getTodoListTС = (): ThunkCreatorType => async (dispatch: Dispatch<ActionTodoLitsType>) => {
+    dispatch(setStatusAC("loading"))
     const res = await todoListsAPI.getTodolists()
     dispatch(setTodoListsAC(res.data))
+    dispatch(setStatusAC("succeeded"))
 }
-export const creacteTodolistsTС = (title: string): ThunkCreatorType => (dispatch) => {
-    todoListsAPI.creacteTodolists(title)
-        .then((res) => {
-            dispatch(addTodoListsAC(res.data.data.item))
-            console.log(res.data);
+export const creacteTodolistsTС = (title: string): ThunkCreatorType => async (dispatch: Dispatch<ActionTodoLitsType>) => {
+    dispatch(setStatusAC("loading"))
+    const res = await todoListsAPI.creacteTodolists(title)
+    dispatch(addTodoListsAC(res.data.data.item))
+    dispatch(setStatusAC("succeeded"))
+}
 
-        })
+export const deleteTodolistsTС = (todoListID: string): ThunkCreatorType => async (dispatch: Dispatch<ActionTodoLitsType>) => {
+    dispatch(setStatusAC("loading"))
+    await todoListsAPI.deleteTodolists(todoListID)
+    dispatch(deleteTodoListAC(todoListID))
+    dispatch(setStatusAC("succeeded"))
 }
-
-export const deleteTodolistsTС = (todoListID: string): ThunkCreatorType => (dispatch) => {
-    todoListsAPI.deleteTodolists(todoListID)
-        .then((res) => {
-            dispatch(deleteTodoListAC(todoListID))
-            console.log(res.data);
-        })
-}
-export const updateTitleTodolistsTС = (todoListID: string, title: string) => (dispatch: Dispatch<ActionTodoLitsType>) => {
-    todoListsAPI.updateTitleTodolists(todoListID, title)
-        .then((res) => {
-            dispatch(updateTodoListTitleAC(todoListID, title))
-            console.log(res);
-        })
+export const updateTitleTodolistsTС = (todoListID: string, title: string) => async (dispatch: Dispatch<ActionTodoLitsType>) => {
+    dispatch(setStatusAC("loading"))
+    const res = await todoListsAPI.updateTitleTodolists(todoListID, title)
+    dispatch(updateTodoListTitleAC(todoListID, title))
+    dispatch(setStatusAC("succeeded"))
+    console.log(res);
 }
 
