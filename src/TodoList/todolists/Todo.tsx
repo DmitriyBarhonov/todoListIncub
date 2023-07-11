@@ -41,7 +41,7 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
 
     // TodoListCallBack----------------------------
     const deleteTodoList = useCallback(() => {
-        
+
         dispatch(deleteTodolistsTС(props.todoListID))
     }, [dispatch, props.todoListID]);
 
@@ -78,7 +78,7 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
                 </h3>
                 <Button disabled={props.entityStatus === 'loading'} variant="contained" onClick={deleteTodoList}>Delete Todo List</Button>
                 <div>
-                    <AddItemForm callBack={addTask} />
+                    <AddItemForm entityStatus={props.entityStatus} callBack={addTask} />
                 </div>
 
                 <ul>

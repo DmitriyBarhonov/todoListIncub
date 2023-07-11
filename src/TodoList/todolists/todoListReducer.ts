@@ -2,7 +2,7 @@
 import { TodoListType, todoListsAPI } from '../../api/todolist-api';
 import { Dispatch } from "redux"
 import { ThunkCreatorType } from '../../app/store';
-import { RequestStatusType, SetStatusType, setStatusAC } from '../../app/appReducer';
+import { RequestStatusType, SetErrorType, SetStatusType, setErrorAC, setStatusAC } from '../../app/appReducer';
 
 
 
@@ -21,6 +21,7 @@ export type ActionTodoLitsType =
     | ReturnType<typeof changeTodoListStatusAC>
     | SetTodoListsACType
     | SetStatusType
+    | SetErrorType
 
 
 
@@ -45,7 +46,7 @@ export const todoListReducer = (state: TodolistsDomainType[] = initialState, act
         case "DELETE-TODO":
             return state.filter(el => el.id !== action.payload.todoListID)
         case "CHANGE-TODOLIST-STATUS":
-            return state.map(el => el.id === action.payload.todoListID ? {...el, entityStatus: action.payload.entityStatus} : el)
+            return state.map(el => el.id === action.payload.todoListID ? { ...el, entityStatus: action.payload.entityStatus } : el)
 
         default:
             return state
@@ -117,31 +118,49 @@ export const setTodoListsAC = (todos: TodoListType[]) => {
 
 export const getTodoListTС = (): ThunkCreatorType => async (dispatch: Dispatch<ActionTodoLitsType>) => {
     dispatch(setStatusAC("loading"))
-    const res = await todoListsAPI.getTodolists()
-    dispatch(setTodoListsAC(res.data))
-    dispatch(setStatusAC("succeeded"))
+    try {
+        const res = await todoListsAPI.getTodolists()
+        dispatch(setTodoListsAC(res.data))
+        dispatch(setStatusAC("succeeded"))
+    } catch (error) {
+        dispatch(setErrorAC(error + "network"))
+        dispatch(setStatusAC('succeeded'))
+    }
 }
 export const creacteTodolistsTС = (title: string): ThunkCreatorType => async (dispatch: Dispatch<ActionTodoLitsType>) => {
     dispatch(setStatusAC("loading"))
-    const res = await todoListsAPI.creacteTodolists(title)
-    dispatch(addTodoListsAC(res.data.data.item))
-    dispatch(setStatusAC("succeeded"))
+    try {
+        const res = await todoListsAPI.creacteTodolists(title)
+        dispatch(addTodoListsAC(res.data.data.item))
+        dispatch(setStatusAC("succeeded"))
+    } catch (error) {
+        dispatch(setErrorAC(error + "network"))
+        dispatch(setStatusAC('succeeded'))
+    }
 }
 
 export const deleteTodolistsTС = (todoListID: string): ThunkCreatorType => async (dispatch: Dispatch<ActionTodoLitsType>) => {
     dispatch(changeTodoListStatusAC(todoListID, "loading"))
     dispatch(setStatusAC("loading"))
-    await todoListsAPI.deleteTodolists(todoListID)
-    dispatch(deleteTodoListAC(todoListID))
-    dispatch(setStatusAC("succeeded"))
-    dispatch(changeTodoListStatusAC(todoListID, "idle"))
+    try {
+        await todoListsAPI.deleteTodolists(todoListID)
+        dispatch(deleteTodoListAC(todoListID))
+        dispatch(setStatusAC("succeeded"))
+    } catch (error) {
+        dispatch(setErrorAC(error + "network"))
+        dispatch(setStatusAC('succeeded'))
+        dispatch(changeTodoListStatusAC(todoListID, "idle"))
+    }
 }
 export const updateTitleTodolistsTС = (todoListID: string, title: string) => async (dispatch: Dispatch<ActionTodoLitsType>) => {
     dispatch(setStatusAC("loading"))
-    const res = await todoListsAPI.updateTitleTodolists(todoListID, title)
-    dispatch(updateTodoListTitleAC(todoListID, title))
-    dispatch(setStatusAC("succeeded"))
-    console.log(res);
+    try {
+        const res = await todoListsAPI.updateTitleTodolists(todoListID, title)
+        dispatch(updateTodoListTitleAC(todoListID, title))
+        dispatch(setStatusAC("succeeded"))
+        console.log(res);
+    } catch (error) {
+        dispatch(setErrorAC(error + "network"))
+        dispatch(setStatusAC('succeeded'))
+    }
 }
-
-// Сделать обработку ошибок как в тасках 

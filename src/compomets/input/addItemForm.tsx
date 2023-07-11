@@ -1,10 +1,12 @@
 import { ChangeEvent, useState, KeyboardEvent, useCallback } from "react"
 import Button from '@mui/material/Button';
 import React from "react";
+import { RequestStatusType } from "../../app/appReducer";
 
 
 export type AddItemFromPropsType = {
     callBack: (title: string) => void
+    entityStatus: RequestStatusType
 }
 
 
