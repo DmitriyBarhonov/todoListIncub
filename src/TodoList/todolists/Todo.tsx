@@ -78,7 +78,7 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
                 </h3>
                 <Button disabled={props.entityStatus === 'loading'} variant="contained" onClick={deleteTodoList}>Delete Todo List</Button>
                 <div>
-                    <AddItemForm entityStatus={props.entityStatus} callBack={addTask} />
+                    <AddItemForm disabled={props.entityStatus === 'loading'} callBack={addTask} />
                 </div>
 
                 <ul>

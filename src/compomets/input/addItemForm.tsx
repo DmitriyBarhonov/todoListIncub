@@ -1,12 +1,12 @@
-import { ChangeEvent, useState, KeyboardEvent, useCallback } from "react"
+import { ChangeEvent, useState, KeyboardEvent } from "react"
 import Button from '@mui/material/Button';
 import React from "react";
 import { RequestStatusType } from "../../app/appReducer";
 
 
 export type AddItemFromPropsType = {
+    disabled?: boolean
     callBack: (title: string) => void
-    entityStatus: RequestStatusType
 }
 
 
@@ -34,9 +34,8 @@ export const AddItemForm = React.memo((props: AddItemFromPropsType) => {
 
     return (
         <>
-            <input
-                placeholder='Max  25 simbols' onKeyDown={AddTaskOnKey} value={title} onChange={setTitleHeadler} />
-            <Button style={style} variant="contained" onClick={tasckHeandler}>+</Button>
+            <input disabled={props.disabled} placeholder='Max  25 simbols' onKeyDown={AddTaskOnKey} value={title} onChange={setTitleHeadler} />
+            <Button disabled={props.disabled} style={style} variant="contained" onClick={tasckHeandler}>+</Button>
             {/* {istitleLengthTooLong && <div>Title is too long</div>} */}
         </>
     )

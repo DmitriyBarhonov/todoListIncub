@@ -1,8 +1,9 @@
 import { AppStateType, ThunkCreatorType } from '../../app/store';
 import { ResultCode, TaskPriority, TaskStatus, TaskType, UpdateTaskModelType, tasksAPI } from '../../api/todolist-api';
 import { SetTodoListsACType } from '../todolists/todoListReducer';
-import { SetStatusType, setStatusAC, SetErrorType, setErrorAC } from '../../app/appReducer';
+import { SetStatusType, setStatusAC, SetErrorType } from '../../app/appReducer';
 import { Dispatch } from 'redux';
+import { handServerAppError, handleServerNetworkError } from '../../utils/errorUtils';
 
 export type AssocTaskType = {
     [key: string]: TaskType[]
@@ -145,10 +146,6 @@ export const SetTaskAC = (task: TaskType[], todoListID: string) => {
 }
 
 
-// ENUM
-
-
-
 // Thunks-------------------------------------------------------------------
 export const setTasksTС = (todoListID: string): ThunkCreatorType => async (dispatch: Dispatch<ActionTasksType>) => {
     dispatch(setStatusAC("loading"))
@@ -172,18 +169,11 @@ export const addTaskTС = (todoListID: string, title: string): ThunkCreatorType 
         dispatch(addTaskTaskAC(res.data.data.item))
         dispatch(setStatusAC('succeeded'))
     } else {
-        if (res.data.messages[0]) {
-            dispatch(setErrorAC(res.data.messages[0]))
-            dispatch(setStatusAC('succeeded'))
-        } else {
-            dispatch(setErrorAC("Some Error"))
-            dispatch(setStatusAC('succeeded'))
-        }
-
+        handServerAppError<{item: TaskType}>(res.data, dispatch)
     }
   } catch (error) {
-    dispatch(setErrorAC(error + "network"))
-    dispatch(setStatusAC('succeeded'))
+    // error netWork
+    handleServerNetworkError(dispatch, error + "wddwwddw")
   }
 }
 
@@ -207,18 +197,11 @@ export const updateTaskTС = (todoListID: string, taskId: string, domainModel: U
             dispatch(updateTaskAC(todoListID, taskId, ApiModel))
             dispatch(setStatusAC('succeeded'))
         } else {
-            if (res.data.messages[0]) {
-                dispatch(setErrorAC(res.data.messages[0]))
-                dispatch(setStatusAC('succeeded'))
-            } else {
-                dispatch(setErrorAC("Some Error"))
-                dispatch(setStatusAC('succeeded'))
-            }
-
+            handServerAppError(res.data,dispatch)
         }
     } catch (error) {
-        dispatch(setErrorAC(error + "network"))
-        dispatch(setStatusAC('succeeded'))
+        // error netWork
+        handleServerNetworkError(dispatch, "Some Error")
     }
 
 }
