@@ -16,7 +16,7 @@ export const handServerAppError = <T> (data: ResponseType<T>, dispatch: ErrorUti
 // Error Network
 
 export const handleServerNetworkError = (dispatch: ErrorUtilsDispatchType, error: string)=>{
-    dispatch(setErrorAC(error + "network"))
+    dispatch(setErrorAC(error))
     dispatch(setStatusAC('failed'))
 }
 

@@ -4,6 +4,7 @@ import { SetTodoListsACType } from '../todolists/todoListReducer';
 import { SetStatusType, setStatusAC, SetErrorType } from '../../app/appReducer';
 import { Dispatch } from 'redux';
 import { handServerAppError, handleServerNetworkError } from '../../utils/errorUtils';
+import axios, { AxiosError } from 'axios';
 
 export type AssocTaskType = {
     [key: string]: TaskType[]
@@ -19,6 +20,17 @@ export type UpdateDomainTaskModelType = {
 }
 
 const initialState: AssocTaskType = {}
+type AddPureTaskACType = ReturnType<typeof AddPureTaskAC>
+type ErrorType = {
+    statusCode: number,
+    messages: [
+        {
+            message: string,
+            field: string
+        }
+    ],
+    error: string
+}
 export type ActionTasksType =
     ReturnType<typeof removeTaskAC>
     | ReturnType<typeof addTaskTaskAC>
@@ -74,7 +86,7 @@ export const tasksReducer = (state: AssocTaskType = initialState, action: Action
 }
 
 // Actions-------------------------------------------------------------------
-type AddPureTaskACType = ReturnType<typeof AddPureTaskAC>
+
 export const AddPureTaskAC = (todoListID: string) => {
     return {
         type: "ADD-PURE-TASK",
@@ -149,32 +161,58 @@ export const SetTaskAC = (task: TaskType[], todoListID: string) => {
 // Thunks-------------------------------------------------------------------
 export const setTasksTС = (todoListID: string): ThunkCreatorType => async (dispatch: Dispatch<ActionTasksType>) => {
     dispatch(setStatusAC("loading"))
-    const res = await tasksAPI.getTasks(todoListID)
-    dispatch(SetTaskAC(res.data.items, todoListID))
-    dispatch(setStatusAC('succeeded'))
+    try {
+        const res = await tasksAPI.getTasks(todoListID)
+        dispatch(SetTaskAC(res.data.items, todoListID))
+        dispatch(setStatusAC('succeeded'))
+    } catch (e) {
+        if (axios.isAxiosError<ErrorType>(e)) {
+            const error = e.response ? e.response?.data.messages[0].message : e.message
+            handleServerNetworkError(dispatch, error)
+            return
+        }
+        const error = (e as Error).message
+        handleServerNetworkError(dispatch, error)
+    }
 }
 
 export const deleteTaskTС = (todoListID: string, taskID: string): ThunkCreatorType => async (dispatch: Dispatch<ActionTasksType>) => {
     dispatch(setStatusAC("loading"))
-    await tasksAPI.deleeteTask(todoListID, taskID)
-    dispatch(removeTaskAC(todoListID, taskID))
-    dispatch(setStatusAC('succeeded'))
+    try {
+        await tasksAPI.deleeteTask(todoListID, taskID)
+        dispatch(removeTaskAC(todoListID, taskID))
+        dispatch(setStatusAC('succeeded'))
+    } catch (e) {
+        if (axios.isAxiosError<ErrorType>(e)) {
+            const error = e.response ? e.response?.data.messages[0].message : e.message
+            handleServerNetworkError(dispatch, error)
+            return
+        }
+        const error = (e as Error).message
+        handleServerNetworkError(dispatch, error)
+    }
 }
 
 export const addTaskTС = (todoListID: string, title: string): ThunkCreatorType => async (dispatch: Dispatch<ActionTasksType>) => {
     dispatch(setStatusAC("loading"))
-  try {
-    const res = await tasksAPI.creacteTask(todoListID, title)
-    if (res.data.resultCode === ResultCode.succeeded) {
-        dispatch(addTaskTaskAC(res.data.data.item))
-        dispatch(setStatusAC('succeeded'))
-    } else {
-        handServerAppError<{item: TaskType}>(res.data, dispatch)
+    try {
+        const res = await tasksAPI.creacteTask(todoListID, title)
+        if (res.data.resultCode === ResultCode.succeeded) {
+            dispatch(addTaskTaskAC(res.data.data.item))
+            dispatch(setStatusAC('succeeded'))
+        } else {
+            handServerAppError<{ item: TaskType }>(res.data, dispatch)
+        }
+    } catch (e) {
+        // error netWork
+        if (axios.isAxiosError<ErrorType>(e)) {
+            const error = e.response ? e.response?.data.messages[0].message : e.message
+            handleServerNetworkError(dispatch, error)
+            return
+        }
+        const error = (e as Error).message
+        handleServerNetworkError(dispatch, error)
     }
-  } catch (error) {
-    // error netWork
-    handleServerNetworkError(dispatch, error + "wddwwddw")
-  }
 }
 
 export const updateTaskTС = (todoListID: string, taskId: string, domainModel: UpdateDomainTaskModelType): ThunkCreatorType => async (dispatch: Dispatch<ActionTasksType>, getState: () => AppStateType) => {
@@ -192,16 +230,24 @@ export const updateTaskTС = (todoListID: string, taskId: string, domainModel: U
     }
 
     try {
-        const res = await tasksAPI.updateTask(todoListID, taskId, ApiModel)
+        const res = await tasksAPI.updateTask(todoListID + "wd", taskId, ApiModel)
         if (res.data.resultCode === ResultCode.succeeded) {
             dispatch(updateTaskAC(todoListID, taskId, ApiModel))
             dispatch(setStatusAC('succeeded'))
         } else {
-            handServerAppError(res.data,dispatch)
+            handServerAppError(res.data, dispatch)
         }
-    } catch (error) {
+
+    } catch (e) {
         // error netWork
-        handleServerNetworkError(dispatch, "Some Error")
+        if (axios.isAxiosError<ErrorType>(e)) {
+            console.log(e);
+            const error = e.response ? e.response?.data.messages[0].message : e.message
+            handleServerNetworkError(dispatch, error)
+            return
+        }
+        const error = (e as Error).message
+        handleServerNetworkError(dispatch, error)
     }
 
 }

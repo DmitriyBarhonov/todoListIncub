@@ -6,7 +6,7 @@ import { FC, useCallback } from "react"
 import React from "react"
 import { TaskStatus } from "../../api/todolist-api"
 import { useTypeDispatch } from "../../app/store"
-import LinearProgress from "@mui/material/LinearProgress/LinearProgress"
+import { RequestStatusType } from "../../app/appReducer"
 
 type PropsTaskType = {
     todoListID: string
@@ -14,10 +14,11 @@ type PropsTaskType = {
     status: any
     title: string
     updateTitleTask: (taskId: string, title: string) => void
+    entityStatus: RequestStatusType
 }
 
 
-export const Task: FC<PropsTaskType> = React.memo(({ id, status, title, todoListID, updateTitleTask }) => {
+export const Task: FC<PropsTaskType> = React.memo(({ id, status, title, todoListID, updateTitleTask, entityStatus }) => {
     const taskClasses = status ? "task_not_is_done" : "task"
     const dispatch = useTypeDispatch()
 
@@ -44,7 +45,7 @@ export const Task: FC<PropsTaskType> = React.memo(({ id, status, title, todoList
             <SuperCheckBox callBack={changeTaskStatus} checked={status} />
            
             <EditableSpan callBack={updateTitleTaskHeandler} oldTitle={title} />
-            <button onClick={removeTask}>X</button>
+            <button disabled={entityStatus === 'loading'} onClick={removeTask}>X</button>
         </li>
     )
 })

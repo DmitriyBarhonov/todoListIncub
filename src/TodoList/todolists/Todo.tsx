@@ -38,6 +38,7 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
     if (props.filter === "firstThre") {
         tasks = tasks.slice(0, 3)
     }
+ 
 
     // TodoListCallBack----------------------------
     const deleteTodoList = useCallback(() => {
@@ -87,6 +88,7 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
                             status={t.status}
                             title={t.title}
                             updateTitleTask={updateTitleTask}
+                            entityStatus={props.entityStatus}
                         />
                     })}
                 </ul>

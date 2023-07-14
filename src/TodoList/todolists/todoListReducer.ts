@@ -4,6 +4,7 @@ import { Dispatch } from "redux"
 import { ThunkCreatorType } from '../../app/store';
 import { RequestStatusType, SetErrorType, SetStatusType, setErrorAC, setStatusAC } from '../../app/appReducer';
 import { handServerAppError, handleServerNetworkError } from '../../utils/errorUtils';
+import axios from 'axios';
 
 
 
@@ -24,7 +25,16 @@ export type ActionTodoLitsType =
     | SetStatusType
     | SetErrorType
 
-
+type ErrorType = {
+    statusCode: number,
+    messages: [
+        {
+            message: string,
+            field: string
+        }
+    ],
+    error: string
+}
 
 // State
 const initialState: TodolistsDomainType[] = []
@@ -123,24 +133,34 @@ export const getTodoListTС = (): ThunkCreatorType => async (dispatch: Dispatch<
         const res = await todoListsAPI.getTodolists()
         dispatch(setTodoListsAC(res.data))
         dispatch(setStatusAC("succeeded"))
-    } catch (error) {
+    } catch (e) {
         // error netWork
-        handleServerNetworkError(dispatch, error + "wddwwddw")
+        if (axios.isAxiosError<ErrorType>(e)) {
+            console.log(e);
+            const error = e.response ? e.response?.data.messages[0].message : e.message
+            handleServerNetworkError(dispatch, error)
+            return
+        }
+        const error = (e as Error).message
+        handleServerNetworkError(dispatch, error)
     }
 }
 export const creacteTodolistsTС = (title: string): ThunkCreatorType => async (dispatch: Dispatch<ActionTodoLitsType>) => {
     dispatch(setStatusAC("loading"))
     try {
         const res = await todoListsAPI.creacteTodolists(title)
-        if (res.data.resultCode === ResultCode.succeeded) {
-            dispatch(addTodoListsAC(res.data.data.item))
-            dispatch(setStatusAC("succeeded"))
-        } else {
-            handServerAppError(res.data, dispatch)
+        dispatch(addTodoListsAC(res.data.data.item))
+        dispatch(setStatusAC("succeeded"))
+
+    } catch (e) {
+        if (axios.isAxiosError<ErrorType>(e)) {
+            console.log(e);
+            const error = e.response ? e.response?.data.messages[0].message : e.message
+            handleServerNetworkError(dispatch, error)
+            return
         }
-    } catch (error) {
-        // error netWork
-        handleServerNetworkError(dispatch, error + "")
+        const error = (e as Error).message
+        handleServerNetworkError(dispatch, error)
     }
 }
 
@@ -149,18 +169,21 @@ export const deleteTodolistsTС = (todoListID: string): ThunkCreatorType => asyn
     dispatch(setStatusAC("loading"))
 
     try {
-        const res = await todoListsAPI.deleteTodolists(todoListID + "DW")
+        const res = await todoListsAPI.deleteTodolists(todoListID)
         console.log(res);
-        if (res.data.resultCode === ResultCode.succeeded) {
-            dispatch(deleteTodoListAC(todoListID))
-            dispatch(setStatusAC("succeeded"))
-        } else {
-            handServerAppError(res.data, dispatch)
+        dispatch(deleteTodoListAC(todoListID))
+        dispatch(setStatusAC("succeeded"))
+
+    } catch (e) {
+        if (axios.isAxiosError<ErrorType>(e)) {
+            console.log(e);
+            const error = e.response ? e.response?.data.messages[0].message : e.message
+            handleServerNetworkError(dispatch, error)
+            dispatch(changeTodoListStatusAC(todoListID, "idle"))
+            return
         }
-    } catch (error) {
-        // error netWork
-        console.log(error);
-        handleServerNetworkError(dispatch, error + "")
+        const error = (e as Error).message
+        handleServerNetworkError(dispatch, error)
         dispatch(changeTodoListStatusAC(todoListID, "idle"))
     }
 }
@@ -170,8 +193,15 @@ export const updateTitleTodolistsTС = (todoListID: string, title: string) => as
         await todoListsAPI.updateTitleTodolists(todoListID, title)
         dispatch(updateTodoListTitleAC(todoListID, title))
         dispatch(setStatusAC("succeeded"))
-    } catch (error) {
+    } catch (e) {
         // error netWork
-        handleServerNetworkError(dispatch, error + "")
+        if (axios.isAxiosError<ErrorType>(e)) {
+            console.log(e);
+            const error = e.response ? e.response?.data.messages[0].message : e.message
+            handleServerNetworkError(dispatch, error)
+            return
+        }
+        const error = (e as Error).message
+        handleServerNetworkError(dispatch, error)
     }
 }
