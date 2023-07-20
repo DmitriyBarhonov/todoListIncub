@@ -1,10 +1,14 @@
-import { AppStateType, ThunkCreatorType } from '../../app/store';
-import { ResultCode, TaskPriority, TaskStatus, TaskType, UpdateTaskModelType, tasksAPI } from '../../api/todolist-api';
+
+import { ResultCode, TaskPriority, TaskStatus, TaskType, UpdateTaskModelType, tasksAPI } from '../../../api/todolist-api';
 import { SetTodoListsACType } from '../todolists/todoListReducer';
-import { SetStatusType, setStatusAC, SetErrorType } from '../../app/appReducer';
+import { SetStatusType, setStatusAC, SetErrorType } from '../../../app/appReducer';
 import { Dispatch } from 'redux';
-import { handServerAppError, handleServerNetworkError } from '../../utils/errorUtils';
-import axios, { AxiosError } from 'axios';
+import { handServerAppError, handleServerNetworkError } from '../../../utils/errorUtils';
+import axios from 'axios';
+import { AppStateType, ThunkCreatorType } from '../../../app/store';
+ 
+ 
+
 
 export type AssocTaskType = {
     [key: string]: TaskType[]
@@ -217,7 +221,7 @@ export const addTaskTС = (todoListID: string, title: string): ThunkCreatorType 
 
 export const updateTaskTС = (todoListID: string, taskId: string, domainModel: UpdateDomainTaskModelType): ThunkCreatorType => async (dispatch: Dispatch<ActionTasksType>, getState: () => AppStateType) => {
     dispatch(setStatusAC("loading"))
-    const task = getState().tasks[todoListID].find(t => t.id === taskId)
+    const task = getState().tasks[todoListID].find((t: TaskType) => t.id === taskId)
 
     const ApiModel: UpdateTaskModelType = {
         deadline: task!.deadline,
@@ -230,7 +234,7 @@ export const updateTaskTС = (todoListID: string, taskId: string, domainModel: U
     }
 
     try {
-        const res = await tasksAPI.updateTask(todoListID + "wd", taskId, ApiModel)
+        const res = await tasksAPI.updateTask(todoListID, taskId, ApiModel)
         if (res.data.resultCode === ResultCode.succeeded) {
             dispatch(updateTaskAC(todoListID, taskId, ApiModel))
             dispatch(setStatusAC('succeeded'))
@@ -241,9 +245,8 @@ export const updateTaskTС = (todoListID: string, taskId: string, domainModel: U
     } catch (e) {
         // error netWork
         if (axios.isAxiosError<ErrorType>(e)) {
-            console.log(e);
-            const error = e.response ? e.response?.data.messages[0].message : e.message
-            handleServerNetworkError(dispatch, error)
+            // const error = e.response ? e.response?.data.messages[0].message : e.message
+            handleServerNetworkError(dispatch, "error")
             return
         }
         const error = (e as Error).message

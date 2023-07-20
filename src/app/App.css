@@ -10,9 +10,9 @@
 
 .todo{
   border: 2px grey;
-  background-color: antiquewhite;
+  background-color: rgb(170, 191, 255);
   border-radius: 5px;
-  padding: 15px;
+  padding: 45px 10px;
 }
 
 .task{

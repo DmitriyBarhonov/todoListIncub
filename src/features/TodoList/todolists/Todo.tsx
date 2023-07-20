@@ -1,15 +1,15 @@
 // import './App.css';
 import React, { FC, useCallback, useEffect } from 'react';
-import { AddItemForm } from '../../compomets/input/addItemForm';
-import { EditableSpan } from '../../compomets/editableSpan/editableSpan';
+import { AddItemForm } from '../../../compomets/input/addItemForm';
+import { EditableSpan } from '../../../compomets/editableSpan/editableSpan';
 import Button from '@mui/material/Button';
 import { FliterValuesType, changeFilterAC, deleteTodolistsTС, updateTitleTodolistsTС, } from '../../TodoList/todolists/todoListReducer';
-import { useAppSelector } from '../../hook/useSelectorHook';
+import { useAppSelector } from '../../../hook/useSelectorHook';
 import { addTaskTС, updateTaskTС, deleteAllTasksTaskAC, setTasksTС } from '../../TodoList/tasks/tasksReducer';
 import { Task } from '../tasks/Task';
-import { TaskStatus } from '../../api/todolist-api';
-import { useTypeDispatch } from '../../app/store';
-import { RequestStatusType } from '../../app/appReducer';
+import { TaskStatus, TaskType } from '../../../api/todolist-api';
+import { useTypeDispatch } from '../../../app/store';
+import { RequestStatusType } from '../../../app/appReducer';
 
 
 type TodoListPropsType = {
@@ -30,15 +30,15 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
     }, [props.todoListID, dispatch])
 
     if (props.filter === 'active') {
-        tasks = tasks.filter(t => t.status === TaskStatus.New)
+        tasks = tasks.filter((t: TaskType) => t.status === TaskStatus.New)
     }
     if (props.filter === "completed") {
-        tasks = tasks.filter(t => t.status === TaskStatus.Completed)
+        tasks = tasks.filter((t: TaskType) => t.status === TaskStatus.Completed)
     }
     if (props.filter === "firstThre") {
         tasks = tasks.slice(0, 3)
     }
- 
+
 
     // TodoListCallBack----------------------------
     const deleteTodoList = useCallback(() => {
@@ -56,7 +56,7 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
     }, [dispatch]);
 
     const updateTitleTask = useCallback((taskId: string, title: string) => {
-        dispatch(updateTaskTС(props.todoListID, taskId, {title}));
+        dispatch(updateTaskTС(props.todoListID, taskId, { title }));
     }, [dispatch, props.todoListID]);
 
 
@@ -83,7 +83,7 @@ const TodoList: FC<TodoListPropsType> = React.memo((props) => {
                 </div>
 
                 <ul>
-                    {tasks?.map((t) => {
+                    {tasks?.map((t: TaskType) => {
                         return <Task todoListID={props.todoListID} key={t.id} id={t.id}
                             status={t.status}
                             title={t.title}

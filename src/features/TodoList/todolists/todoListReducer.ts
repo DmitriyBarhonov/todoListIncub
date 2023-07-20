@@ -1,9 +1,9 @@
 
-import { ResultCode, TodoListType, todoListsAPI } from '../../api/todolist-api';
+import { ResultCode, TodoListType, todoListsAPI } from '../../../api/todolist-api';
 import { Dispatch } from "redux"
-import { ThunkCreatorType } from '../../app/store';
-import { RequestStatusType, SetErrorType, SetStatusType, setErrorAC, setStatusAC } from '../../app/appReducer';
-import { handServerAppError, handleServerNetworkError } from '../../utils/errorUtils';
+import { ThunkCreatorType } from '../../../app/store';
+import { RequestStatusType, SetErrorType, SetStatusType, setStatusAC } from '../../../app/appReducer';
+import {handleServerNetworkError } from '../../../utils/errorUtils';
 import axios from 'axios';
 
 
@@ -136,7 +136,6 @@ export const getTodoListTС = (): ThunkCreatorType => async (dispatch: Dispatch<
     } catch (e) {
         // error netWork
         if (axios.isAxiosError<ErrorType>(e)) {
-            console.log(e);
             const error = e.response ? e.response?.data.messages[0].message : e.message
             handleServerNetworkError(dispatch, error)
             return
@@ -154,7 +153,6 @@ export const creacteTodolistsTС = (title: string): ThunkCreatorType => async (d
 
     } catch (e) {
         if (axios.isAxiosError<ErrorType>(e)) {
-            console.log(e);
             const error = e.response ? e.response?.data.messages[0].message : e.message
             handleServerNetworkError(dispatch, error)
             return
@@ -170,13 +168,12 @@ export const deleteTodolistsTС = (todoListID: string): ThunkCreatorType => asyn
 
     try {
         const res = await todoListsAPI.deleteTodolists(todoListID)
-        console.log(res);
+
         dispatch(deleteTodoListAC(todoListID))
         dispatch(setStatusAC("succeeded"))
 
     } catch (e) {
         if (axios.isAxiosError<ErrorType>(e)) {
-            console.log(e);
             const error = e.response ? e.response?.data.messages[0].message : e.message
             handleServerNetworkError(dispatch, error)
             dispatch(changeTodoListStatusAC(todoListID, "idle"))
@@ -196,7 +193,6 @@ export const updateTitleTodolistsTС = (todoListID: string, title: string) => as
     } catch (e) {
         // error netWork
         if (axios.isAxiosError<ErrorType>(e)) {
-            console.log(e);
             const error = e.response ? e.response?.data.messages[0].message : e.message
             handleServerNetworkError(dispatch, error)
             return

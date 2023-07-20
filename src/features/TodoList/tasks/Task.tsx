@@ -1,12 +1,12 @@
-import "../../app/App.css"
+import "../../../app/App.css"
 import { updateTaskTС,deleteTaskTС } from "./tasksReducer"
-import { SuperCheckBox } from "../../compomets/Supercheck/SuperChek"
-import { EditableSpan } from "../../compomets/editableSpan/editableSpan"
+import { SuperCheckBox } from "../../../compomets/Supercheck/SuperChek"
+import { EditableSpan } from "../../../compomets/editableSpan/editableSpan"
 import { FC, useCallback } from "react"
 import React from "react"
-import { TaskStatus } from "../../api/todolist-api"
-import { useTypeDispatch } from "../../app/store"
-import { RequestStatusType } from "../../app/appReducer"
+import { TaskStatus } from "../../../api/todolist-api"
+import { useTypeDispatch } from "../../../app/store"
+import { RequestStatusType } from "../../../app/appReducer"
 
 type PropsTaskType = {
     todoListID: string
