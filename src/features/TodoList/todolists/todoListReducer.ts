@@ -25,14 +25,10 @@ export type ActionTodoLitsType =
     | SetStatusType
     | SetErrorType
 
-type ErrorType = {
+export type ErrorType = {
     statusCode: number,
-    messages: [
-        {
-            message: string,
-            field: string
-        }
-    ],
+    message: string
+ 
     error: string
 }
 
@@ -134,12 +130,17 @@ export const getTodoListTС = (): ThunkCreatorType => async (dispatch: Dispatch<
         dispatch(setTodoListsAC(res.data))
         dispatch(setStatusAC("succeeded"))
     } catch (e) {
+         
         // error netWork
         if (axios.isAxiosError<ErrorType>(e)) {
-            const error = e.response ? e.response?.data.messages[0].message : e.message
+            console.log(e);
+            
+            const error = e.response ? e.response?.data.message : e.message
             handleServerNetworkError(dispatch, error)
             return
+
         }
+       
         const error = (e as Error).message
         handleServerNetworkError(dispatch, error)
     }
@@ -153,7 +154,7 @@ export const creacteTodolistsTС = (title: string): ThunkCreatorType => async (d
 
     } catch (e) {
         if (axios.isAxiosError<ErrorType>(e)) {
-            const error = e.response ? e.response?.data.messages[0].message : e.message
+            const error = e.response ? e.response?.data.message: e.message
             handleServerNetworkError(dispatch, error)
             return
         }
@@ -174,7 +175,7 @@ export const deleteTodolistsTС = (todoListID: string): ThunkCreatorType => asyn
 
     } catch (e) {
         if (axios.isAxiosError<ErrorType>(e)) {
-            const error = e.response ? e.response?.data.messages[0].message : e.message
+            const error = e.response ? e.response?.data.message : e.message
             handleServerNetworkError(dispatch, error)
             dispatch(changeTodoListStatusAC(todoListID, "idle"))
             return
@@ -193,7 +194,7 @@ export const updateTitleTodolistsTС = (todoListID: string, title: string) => as
     } catch (e) {
         // error netWork
         if (axios.isAxiosError<ErrorType>(e)) {
-            const error = e.response ? e.response?.data.messages[0].message : e.message
+            const error = e.response ? e.response?.data.message : e.message
             handleServerNetworkError(dispatch, error)
             return
         }

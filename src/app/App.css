@@ -3,8 +3,10 @@
   display: flex;
   flex-wrap: wrap;
 }
-
-.App > div {
+.todolist_wrapper{
+  display: flex;
+}
+.todolist_wrapper > div {
   margin: 30px;
 }
 

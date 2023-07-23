@@ -4,6 +4,7 @@ import { ActionTasksType, tasksReducer } from "../features/TodoList/tasks/tasksR
 import  thunkMiddleware, { ThunkAction, ThunkDispatch } from "redux-thunk"
 import { useDispatch } from 'react-redux';
 import { appReducer } from './appReducer';
+import { authReducer } from '../features/login/authReducer';
 
 
 
@@ -20,7 +21,8 @@ export type ThunkCreatorType = ThunkAction<void, AppStateType, unknown, AppActio
 let RootReducers  = combineReducers({
     tasks: tasksReducer,
     todolists: todoListReducer,
-    app: appReducer
+    app: appReducer,
+    auth: authReducer,
 })
 
 export const useTypeDispatch = ()=> useDispatch<AppDispatchType>()
