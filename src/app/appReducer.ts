@@ -29,6 +29,7 @@ export const setErrorAC = (error: string | null) => ({ type: 'APP/SET-ERROR', er
 export const setInitializedAC = (isInitialized: boolean) => ({ type: 'APP/SET-INITIALIZEED', isInitialized } as const)
 export type SetStatusType = ReturnType<typeof setStatusAC> 
 export type SetErrorType =  ReturnType<typeof setErrorAC>
+export type SetInitializedType =   ReturnType<typeof setInitializedAC>
  
 
-type ActionsType = SetStatusType | ReturnType<typeof setErrorAC> | ReturnType<typeof setInitializedAC>
+type ActionsType = SetStatusType | ReturnType<typeof setErrorAC> | SetInitializedType

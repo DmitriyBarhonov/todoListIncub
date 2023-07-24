@@ -2,47 +2,47 @@ import React, { useEffect } from 'react';
 import './App.css';
 import { useAppSelector } from '../hook/useSelectorHook';
 import LinearProgress from '@mui/material/LinearProgress/LinearProgress';
-import { RequestStatusType, setInitializedAC } from './appReducer';
+import { RequestStatusType } from './appReducer';
 import { ErrorSnackbar } from '../compomets/errorSnackbar/errorSnackbar';
 import { Login } from "../features/login/Login"
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { TodolistsList } from '../features/TodoList/TodolistsList';
 import { useTypeDispatch } from './store';
-import { meAuthTC } from '../features/login/authReducer';
+import { logOutTC, meAuthTC } from '../features/login/authReducer';
 import CircularProgress from '@mui/material/CircularProgress';
-import { setIn } from 'formik';
+import Button from '@mui/material/Button';
+ 
 
 
 
 const App = React.memo(() => {
     const statusLoad = useAppSelector<RequestStatusType>(state => state.app.status)
     const iInitialized = useAppSelector<boolean>(state => state.app.isInitialized)
+    const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn)
     const dispatch = useTypeDispatch()
 
 
     useEffect(() => {
-        const res = dispatch(meAuthTC())
-        res.then(() => {
-            dispatch(setInitializedAC(true))
-        })
-            .catch(() => {
-                <Navigate to={"/login"} />
-            })
+        dispatch(meAuthTC())
+
     }, [dispatch])
 
-    
+
     if (!iInitialized) {
         return <div style={{ position: "fixed", top: "30%", textAlign: "center", width: "100%" }}>
             <CircularProgress />
         </div>
+    }
 
+    const logOutHandler = ()=>{
+        dispatch(logOutTC())
     }
 
     return (
         <>
             {statusLoad === "loading" && <LinearProgress color="secondary" />}
             <div className="App">
-
+            {isLoggedIn && <Button onClick={logOutHandler} variant="contained" >Log out</Button> }
                 <ErrorSnackbar />
                 <Routes>
                     <Route path={"/"} element={<TodolistsList />} />
