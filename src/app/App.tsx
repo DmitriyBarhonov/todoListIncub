@@ -40,9 +40,10 @@ const App = React.memo(() => {
 
     return (
         <>
+         {isLoggedIn && <Button onClick={logOutHandler} variant="contained" >Log out</Button> }
             {statusLoad === "loading" && <LinearProgress color="secondary" />}
             <div className="App">
-            {isLoggedIn && <Button onClick={logOutHandler} variant="contained" >Log out</Button> }
+           
                 <ErrorSnackbar />
                 <Routes>
                     <Route path={"/"} element={<TodolistsList />} />
