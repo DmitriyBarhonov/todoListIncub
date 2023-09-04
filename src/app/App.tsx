@@ -11,7 +11,7 @@ import { useTypeDispatch } from './store';
 import { logOutTC, meAuthTC } from '../features/login/authReducer';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
- 
+
 
 
 
@@ -34,16 +34,16 @@ const App = React.memo(() => {
         </div>
     }
 
-    const logOutHandler = ()=>{
+    const logOutHandler = () => {
         dispatch(logOutTC())
     }
 
     return (
         <>
-         {isLoggedIn && <Button onClick={logOutHandler} variant="contained" >Log out</Button> }
+            {isLoggedIn && <Button onClick={logOutHandler} variant="contained" >Log out</Button>}
             {statusLoad === "loading" && <LinearProgress color="secondary" />}
             <div className="App">
-           
+
                 <ErrorSnackbar />
                 <Routes>
                     <Route path={"/"} element={<TodolistsList />} />
